@@ -1,4 +1,3 @@
-
 # Alcance del MVP - Sonqo Maki
 
 > Estado: definicion inicial  
@@ -28,7 +27,7 @@ El alcance se concentra en validar el flujo principal de atencion domiciliaria, 
 
 ### Especialista
 
-Usuario autenticado del sistema. Puede registrar pacientes, gestionar ejercicios, crear planes y rutinas, programar recordatorios y consultar el estado basico de los envios.
+Usuario autenticado del sistema. Puede registrar pacientes, editar pacientes, gestionar ejercicios, crear planes y rutinas, programar recordatorios y consultar el estado basico de los envios.
 
 Las cuentas de especialistas seran creadas manualmente durante el MVP. El inicio de sesion sera con email y contrasena. No se incluye recuperacion de contrasena.
 
@@ -93,7 +92,6 @@ Estados considerados para el MVP:
 
 - activo;
 - en pausa;
-- desactivado;
 - finalizado.
 
 ### 4.5. Rutinas
@@ -132,7 +130,6 @@ El enlace no vence mientras el plan de ejercicios este activo. Si el estado del 
 
 - plan finalizado: mensaje indicando que el paciente concluyo su plan de ejercicios;
 - plan en pausa: mensaje indicando que el plan esta en pausa y que debe comunicarse con su especialista;
-- plan desactivado: mensaje indicando que el plan no esta disponible.
 
 ### 4.7. Recordatorios
 
@@ -144,7 +141,7 @@ Los recordatorios se enviaran solo ciertos dias de la semana, definidos por el e
 
 El especialista podra pausar los recordatorios de un plan.
 
-Si el plan esta en pausa, desactivado o finalizado, el sistema dejara de enviar recordatorios.
+Si el plan esta en pausa o finalizado, el sistema dejara de enviar recordatorios.
 
 ### 4.8. WhatsApp
 
@@ -219,5 +216,5 @@ La primera version debera evitar especialmente:
 
 - envios duplicados o spam;
 - enlaces sin destino util;
-- confusion al editar rutinas;
+- confusion al editar planes de ejercicios y rutinas;
 - perdida del estado basico de los envios.
