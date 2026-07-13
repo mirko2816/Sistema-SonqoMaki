@@ -2,7 +2,7 @@
 
 > Estado: depurado para MVP  
 > Fecha: 13 de julio de 2026  
-> Fuentes: `vision-del-producto.md`, `alcance-mvp.md`, `fuera-del-alcance-MVP.md` y PDF "Requisitos Funcionales y No Funcionales (1).pdf"
+> Fuentes: `vision-del-producto.md`, `alcance-mvp.md`, `fuera-del-alcance-MVP.md` y PDF "Requisitos Funcionales y No Funcionales - antiguo.pdf"
 
 ## 1. Criterio de depuracion
 
@@ -84,15 +84,32 @@ El sistema debe permitir editar los datos basicos del paciente.
 
 ### RF-PAC-006 Estado del paciente
 
-El sistema debe permitir marcar a un paciente como activo o inactivo.
+El sistema debe permitir marcar a un paciente como **activo o inactivo**.
 
 Un paciente inactivo no debe recibir recordatorios.
 
 ### RF-PAC-007 Eliminacion de paciente
 
-El sistema debe permitir eliminar pacientes cuando no comprometa la consistencia de planes, rutinas o registros de envio existentes.
+El sistema debe permitir eliminar pacientes.
 
-### RF-PAC-008 Consentimiento WhatsApp
+Antes de confirmar la eliminacion, si el paciente tiene planes asociados, el sistema debe mostrar una advertencia clara indicando que tambien se eliminaran sus planes, rutinas configuradas, recordatorios, enlaces publicos y registros asociados que dependan directamente del paciente.
+
+La eliminacion debe requerir una confirmacion explicita del especialista.
+
+### RF-PAC-008 Eliminacion en cascada del paciente
+
+Cuando se confirme la eliminacion de un paciente, el sistema debe eliminar en cascada la informacion operativa propia de ese paciente:
+
+- planes de ejercicios asociados;
+- rutinas configuradas dentro de esos planes;
+- ejercicios configurados dentro de esas rutinas;
+- recordatorios del plan;
+- enlaces publicos asociados;
+- historial tecnico de envios asociado al paciente o a sus planes.
+
+La eliminacion del paciente no debe eliminar ejercicios guardados en la biblioteca ni rutinas guardadas en la biblioteca, porque esos elementos son reutilizables e independientes del paciente.
+
+### RF-PAC-009 Consentimiento WhatsApp
 
 El sistema debe almacenar la fecha en que el especialista confirma que el paciente otorgo consentimiento para recibir mensajes por WhatsApp.
 
@@ -128,6 +145,12 @@ El sistema debe permitir reutilizar un ejercicio en distintas rutinas.
 ### RF-EJE-005 Material externo
 
 La URL de material puede apuntar a YouTube u otro recurso externo. El MVP no debe cargar ni almacenar videos, imagenes, PDF ni archivos propios.
+
+### RF-EJE-006 Biblioteca de ejercicios
+
+El sistema debe mantener una biblioteca de ejercicios independiente de los pacientes y planes.
+
+Los ejercicios guardados en esta biblioteca deben poder seleccionarse al configurar rutinas y no deben eliminarse cuando se elimine un paciente.
 
 ## 6. Planes de ejercicios
 
@@ -166,6 +189,14 @@ Cada plan debe gestionar sus propias rutinas, recordatorios y enlace publico.
 Cuando el plan llegue a su fecha de fin, el sistema debe dejar de enviar recordatorios asociados a ese plan.
 
 El cambio automatico de estado a finalizado puede implementarse como parte de la logica de ejecucion o como una tarea programada.
+
+### RF-PLA-006 Duplicacion de plan desde otro paciente
+
+El sistema debe permitir duplicar un plan de ejercicios existente de otro paciente para asignarlo a un nuevo paciente.
+
+Al duplicar el plan, el sistema debe crear una copia editable del plan, sus rutinas y la configuracion de ejercicios, sin vincular la nueva copia al paciente original.
+
+El especialista debe poder ajustar fechas, rutinas, ejercicios, recordatorios y estado del nuevo plan antes de usarlo.
 
 ## 7. Rutinas
 
@@ -212,6 +243,16 @@ Por cada ejercicio agregado a una rutina, el especialista debe poder ajustar:
 ### RF-RUT-007 Validacion minima para activar uso del plan
 
 Un plan debe tener al menos una rutina y cada rutina debe tener al menos un ejercicio para ser util en la pagina publica y en los recordatorios.
+
+### RF-RUT-008 Biblioteca de rutinas
+
+El sistema debe permitir guardar rutinas reutilizables en una biblioteca de rutinas independiente de los pacientes.
+
+Una rutina de biblioteca debe poder usarse como base para crear una rutina dentro de un plan de paciente.
+
+Al usar una rutina de biblioteca en un plan, el sistema debe crear una copia editable para ese plan, de modo que los cambios del paciente no modifiquen la rutina original de la biblioteca.
+
+Las rutinas guardadas en la biblioteca no deben eliminarse cuando se elimine un paciente.
 
 ## 8. Pagina publica de rutina
 
@@ -283,15 +324,24 @@ El sistema solo debe enviar recordatorios cuando:
 - el paciente este activo;
 - el paciente tenga consentimiento WhatsApp registrado;
 - el plan este activo;
+- el plan tenga rutinas contiguas, sin huecos ni fechas dentro del rango del plan sin una rutina asociada;
 - los recordatorios del plan esten activos;
 - exista una rutina vigente para el dia;
 - el enlace publico tenga un destino util.
 
-### RF-REC-007 Detener envios por estado del plan
+### RF-REC-007 Validacion del plan antes del envio
+
+Antes de enviar recordatorios de un plan, el sistema debe validar que todo el rango de fechas del plan este cubierto por rutinas asociadas.
+
+El sistema no debe enviar recordatorios si el plan tiene huecos de fechas, rutinas superpuestas o dias dentro del rango del plan sin una rutina asociada.
+
+Cuando la validacion falle, el sistema debe registrar o mostrar un estado claro para que el especialista pueda corregir la configuracion del plan.
+
+### RF-REC-008 Detener envios por estado del plan
 
 Si el plan esta en pausa o finalizado, el sistema no debe enviar recordatorios asociados a ese plan.
 
-### RF-REC-008 Evitar duplicados
+### RF-REC-009 Evitar duplicados
 
 El sistema debe evitar envios duplicados para la misma ejecucion programada de un recordatorio.
 
@@ -379,7 +429,7 @@ Los siguientes requisitos del PDF quedan fuera del MVP por contradecir o exceder
 - desbloqueo manual de cuentas por administrador;
 - multiples especialistas con visibilidad global;
 - carga y almacenamiento propio de imagenes, videos, PDF o archivos;
-- categorias, filtros avanzados y plantillas reutilizables de rutinas;
+- categorias y filtros avanzados de rutinas;
 - respuestas estructuradas del paciente por WhatsApp;
 - mensajes libres del paciente;
 - registro de cumplimiento, dolor o solicitud de contacto;
