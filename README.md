@@ -16,6 +16,10 @@ Una aplicación interna para registrar pacientes, asignarles una rutina, compart
 
 ---
 
+
+
+
+```
 docs/
 ├── 00-producto/
 │ ├── vision-del-producto.md
@@ -77,3 +81,4 @@ docs/
 │
 └── 06-trazabilidad/
  └── matriz-de-trazabilidad.md
+```
