@@ -1,0 +1,393 @@
+# Requisitos funcionales - Sonqo Maki
+
+> Estado: depurado para MVP  
+> Fecha: 13 de julio de 2026  
+> Fuentes: `vision-del-producto.md`, `alcance-mvp.md`, `fuera-del-alcance-MVP.md` y PDF "Requisitos Funcionales y No Funcionales (1).pdf"
+
+## 1. Criterio de depuracion
+
+Estos requisitos conservan solo las capacidades necesarias para validar el flujo principal del MVP: registrar pacientes, crear ejercicios, armar planes con rutinas, programar recordatorios por WhatsApp, mostrar al paciente la rutina vigente mediante un enlace seguro y registrar el resultado tecnico de cada envio.
+
+Quedan fuera los modulos de administracion avanzada, multiples roles, recuperacion de contrasena, almacenamiento propio de archivos, respuestas del paciente por WhatsApp, alertas clinicas, metricas, reportes, exportaciones, auditoria avanzada y reintentos automaticos.
+
+## 2. Actores
+
+### RF-ACT-001 Especialista autenticado
+
+El sistema debe permitir que el especialista use la aplicacion web mediante una cuenta creada manualmente para el MVP.
+
+El especialista puede:
+
+- iniciar y cerrar sesion;
+- registrar, consultar, editar, activar, inactivar o eliminar pacientes;
+- gestionar ejercicios reutilizables;
+- crear y editar planes de ejercicios;
+- crear y ordenar rutinas dentro de un plan;
+- configurar recordatorios del plan;
+- consultar el historial basico de envios por WhatsApp.
+
+### RF-ACT-002 Paciente sin cuenta
+
+El paciente no debe iniciar sesion ni administrar informacion dentro del sistema.
+
+El paciente solo puede acceder, mediante un enlace seguro recibido por WhatsApp, a la pagina publica de la rutina vigente del dia.
+
+### RF-ACT-003 WhatsApp Cloud API
+
+El sistema debe usar WhatsApp Cloud API como canal externo para enviar recordatorios y registrar el resultado tecnico de cada intento.
+
+## 3. Autenticacion
+
+### RF-AUT-001 Inicio de sesion
+
+El sistema debe permitir que el especialista inicie sesion con email y contrasena.
+
+### RF-AUT-002 Cierre de sesion
+
+El sistema debe permitir que el especialista cierre sesion manualmente.
+
+### RF-AUT-003 Cuenta creada manualmente
+
+La cuenta inicial del especialista debe poder crearse por configuracion o carga administrativa, sin una pantalla publica de registro.
+
+### RF-AUT-004 Restriccion de roles
+
+El MVP debe manejar un unico tipo de usuario autenticado: especialista. No debe incluir roles diferenciados de administrador, permisos avanzados ni gestion de multiples especialistas desde la interfaz.
+
+## 4. Pacientes
+
+### RF-PAC-001 Registro de paciente
+
+El sistema debe permitir registrar pacientes con los datos minimos del MVP:
+
+- nombres;
+- apellidos;
+- telefono WhatsApp con formato peruano `+51`;
+- DNI;
+- fecha de consentimiento para recibir mensajes por WhatsApp.
+
+### RF-PAC-002 Validacion de datos del paciente
+
+El sistema debe validar que el telefono tenga formato peruano `+51` y que el DNI no se repita entre pacientes registrados.
+
+### RF-PAC-003 Listado de pacientes
+
+El sistema debe mostrar un listado de pacientes para que el especialista pueda encontrarlos y acceder a su detalle.
+
+### RF-PAC-004 Detalle de paciente
+
+El sistema debe mostrar el detalle basico del paciente, incluyendo sus datos de contacto, estado y planes asociados.
+
+### RF-PAC-005 Edicion de paciente
+
+El sistema debe permitir editar los datos basicos del paciente.
+
+### RF-PAC-006 Estado del paciente
+
+El sistema debe permitir marcar a un paciente como activo o inactivo.
+
+Un paciente inactivo no debe recibir recordatorios.
+
+### RF-PAC-007 Eliminacion de paciente
+
+El sistema debe permitir eliminar pacientes cuando no comprometa la consistencia de planes, rutinas o registros de envio existentes.
+
+### RF-PAC-008 Consentimiento WhatsApp
+
+El sistema debe almacenar la fecha en que el especialista confirma que el paciente otorgo consentimiento para recibir mensajes por WhatsApp.
+
+El sistema no debe enviar recordatorios a pacientes sin consentimiento registrado.
+
+## 5. Ejercicios
+
+### RF-EJE-001 Crear ejercicio
+
+El sistema debe permitir crear ejercicios reutilizables.
+
+Datos del ejercicio:
+
+- nombre, obligatorio;
+- descripcion, opcional;
+- duracion, opcional;
+- sets, opcional;
+- repeticiones, opcional;
+- URL de material externo, opcional.
+
+### RF-EJE-002 Listar ejercicios
+
+El sistema debe permitir listar los ejercicios registrados en la biblioteca.
+
+### RF-EJE-003 Editar ejercicio
+
+El sistema debe permitir editar los datos de un ejercicio.
+
+### RF-EJE-004 Reutilizar ejercicio
+
+El sistema debe permitir reutilizar un ejercicio en distintas rutinas.
+
+### RF-EJE-005 Material externo
+
+La URL de material puede apuntar a YouTube u otro recurso externo. El MVP no debe cargar ni almacenar videos, imagenes, PDF ni archivos propios.
+
+## 6. Planes de ejercicios
+
+### RF-PLA-001 Crear plan
+
+El sistema debe permitir crear un plan de ejercicios asociado a un paciente.
+
+Datos del plan:
+
+- paciente;
+- nombre;
+- fecha de inicio;
+- fecha de fin;
+- estado.
+
+### RF-PLA-002 Estados del plan
+
+El sistema debe manejar los siguientes estados del plan:
+
+- activo;
+- en pausa;
+- finalizado.
+
+### RF-PLA-003 Editar plan
+
+El sistema debe permitir editar los datos basicos de un plan y su composicion mientras no rompa las reglas de fechas de sus rutinas.
+
+### RF-PLA-004 Multiples planes por paciente
+
+El sistema debe permitir que un paciente tenga distintos planes de ejercicios.
+
+Cada plan debe gestionar sus propias rutinas, recordatorios y enlace publico.
+
+### RF-PLA-005 Finalizacion del plan
+
+Cuando el plan llegue a su fecha de fin, el sistema debe dejar de enviar recordatorios asociados a ese plan.
+
+El cambio automatico de estado a finalizado puede implementarse como parte de la logica de ejecucion o como una tarea programada.
+
+## 7. Rutinas
+
+### RF-RUT-001 Crear rutina
+
+El sistema debe permitir crear una o mas rutinas dentro de un plan.
+
+Datos de la rutina:
+
+- plan al que pertenece;
+- nombre;
+- fecha de inicio;
+- fecha de fin.
+
+### RF-RUT-002 Reglas de fechas de rutinas
+
+Las rutinas de un mismo plan deben:
+
+- estar dentro de la fecha de inicio y fecha de fin del plan;
+- no superponerse entre si;
+- ser contiguas cuando exista mas de una rutina en el plan.
+
+### RF-RUT-003 Rutina vigente
+
+El sistema debe identificar automaticamente la rutina vigente del dia dentro de un plan activo.
+
+### RF-RUT-004 Agregar ejercicios a rutina
+
+El sistema debe permitir agregar uno o mas ejercicios de la biblioteca a una rutina.
+
+### RF-RUT-005 Ordenar ejercicios
+
+El sistema debe permitir ordenar manualmente los ejercicios dentro de una rutina.
+
+### RF-RUT-006 Configurar ejercicio dentro de rutina
+
+Por cada ejercicio agregado a una rutina, el especialista debe poder ajustar:
+
+- sets;
+- repeticiones;
+- duracion;
+- URL de material.
+
+### RF-RUT-007 Validacion minima para activar uso del plan
+
+Un plan debe tener al menos una rutina y cada rutina debe tener al menos un ejercicio para ser util en la pagina publica y en los recordatorios.
+
+## 8. Pagina publica de rutina
+
+### RF-PUB-001 Enlace seguro
+
+El sistema debe generar y gestionar automaticamente un enlace seguro asociado al plan del paciente.
+
+El especialista no debe administrar manualmente los enlaces.
+
+### RF-PUB-002 Acceso sin cuenta
+
+La pagina publica debe permitir que el paciente consulte su rutina sin crear cuenta ni iniciar sesion.
+
+### RF-PUB-003 Contenido visible para el paciente
+
+La pagina publica debe mostrar solo la informacion necesaria para realizar la rutina vigente:
+
+- nombre de la rutina;
+- ejercicios;
+- indicaciones configuradas por ejercicio;
+- enlaces externos de material cuando existan.
+
+No debe mostrar informacion personal sensible del paciente.
+
+### RF-PUB-004 Restriccion de rutinas pasadas y futuras
+
+La pagina publica no debe permitir que el paciente vea rutinas pasadas ni futuras.
+
+### RF-PUB-005 Plan en pausa
+
+Si el plan esta en pausa, el enlace debe mostrar una pagina estatica indicando que el plan esta en pausa y que el paciente debe comunicarse con su especialista.
+
+### RF-PUB-006 Plan finalizado
+
+Si el plan esta finalizado, el enlace debe mostrar una pagina estatica indicando que el paciente concluyo su plan de ejercicios.
+
+### RF-PUB-007 Enlaces invalidos
+
+El sistema debe rechazar enlaces invalidos o revocados mostrando un estado claro, sin exponer datos del paciente.
+
+## 9. Recordatorios
+
+### RF-REC-001 Configurar recordatorios por plan
+
+El sistema debe permitir configurar recordatorios asociados a un plan de ejercicios.
+
+### RF-REC-002 Limite de recordatorios diarios
+
+Cada plan puede tener como maximo dos recordatorios por dia.
+
+### RF-REC-003 Dias de envio
+
+El especialista debe poder definir en que dias de la semana se enviaran los recordatorios.
+
+### RF-REC-004 Horarios de envio
+
+El especialista debe poder definir los horarios de envio de los recordatorios.
+
+Los horarios deben ejecutarse en la zona horaria configurada para la clinica, inicialmente `America/Lima`.
+
+### RF-REC-005 Pausar recordatorios
+
+El especialista debe poder pausar los recordatorios de un plan.
+
+### RF-REC-006 Condiciones para enviar recordatorios
+
+El sistema solo debe enviar recordatorios cuando:
+
+- el paciente este activo;
+- el paciente tenga consentimiento WhatsApp registrado;
+- el plan este activo;
+- los recordatorios del plan esten activos;
+- exista una rutina vigente para el dia;
+- el enlace publico tenga un destino util.
+
+### RF-REC-007 Detener envios por estado del plan
+
+Si el plan esta en pausa o finalizado, el sistema no debe enviar recordatorios asociados a ese plan.
+
+### RF-REC-008 Evitar duplicados
+
+El sistema debe evitar envios duplicados para la misma ejecucion programada de un recordatorio.
+
+## 10. WhatsApp e historial tecnico
+
+### RF-WPP-001 Envio de recordatorio
+
+El sistema debe enviar recordatorios mediante WhatsApp Cloud API.
+
+### RF-WPP-002 Contenido base del mensaje
+
+Durante el MVP, el mensaje debe incluir un texto breve y el enlace seguro a la rutina vigente.
+
+Texto base esperado:
+
+```text
+Hola {nombre}. Tu salud es importante. Recuerda realizar tu rutina de hoy: {enlace}.
+```
+
+El contenido final debe adaptarse a las reglas de plantillas aprobadas por Meta cuando corresponda.
+
+### RF-WPP-003 Registro de intento de envio
+
+El sistema debe registrar por cada intento de envio:
+
+- fecha y hora;
+- paciente;
+- plan;
+- recordatorio relacionado;
+- identificador devuelto por WhatsApp, si existe;
+- estado tecnico basico;
+- codigo o detalle tecnico del error, si existe.
+
+### RF-WPP-004 Estados tecnicos minimos
+
+El sistema debe distinguir como minimo entre:
+
+- aceptado o exitoso;
+- fallido.
+
+### RF-WPP-005 Sin reintentos automaticos
+
+El MVP no debe ejecutar reintentos automaticos si un envio falla. El sistema solo debe registrar el fallo.
+
+### RF-WPP-006 Historial basico de envios
+
+El especialista debe poder consultar un historial basico de envios con los resultados tecnicos registrados.
+
+## 11. Dashboard y pantallas minimas
+
+### RF-UI-001 Pantallas minimas del MVP
+
+El sistema debe incluir como minimo las siguientes pantallas:
+
+- inicio de sesion;
+- dashboard simple;
+- pacientes;
+- detalle de paciente;
+- biblioteca de ejercicios;
+- crear y editar plan;
+- configurar rutinas;
+- configurar recordatorios;
+- historial basico de envios;
+- pagina publica de rutina.
+
+### RF-UI-002 Dashboard simple
+
+El dashboard debe mostrar como minimo:
+
+- nombre del paciente;
+- telefono;
+- estado del plan;
+- estado de recordatorios.
+
+## 12. Requisitos funcionales pospuestos
+
+Los siguientes requisitos del PDF quedan fuera del MVP por contradecir o exceder `alcance-mvp.md` y `fuera-del-alcance-MVP.md`:
+
+- gestion de administradores, especialistas, roles y permisos;
+- configuracion de organizacion desde la aplicacion;
+- supervision global de uso, metricas y exportaciones;
+- gestion de logs de auditoria desde interfaz;
+- configuracion de credenciales y templates de WhatsApp desde interfaz;
+- recuperacion de contrasena;
+- desbloqueo manual de cuentas por administrador;
+- multiples especialistas con visibilidad global;
+- carga y almacenamiento propio de imagenes, videos, PDF o archivos;
+- categorias, filtros avanzados y plantillas reutilizables de rutinas;
+- respuestas estructuradas del paciente por WhatsApp;
+- mensajes libres del paciente;
+- registro de cumplimiento, dolor o solicitud de contacto;
+- rerecordatorios por postergacion;
+- alertas clinicas o tecnicas y gestion de alertas;
+- notificaciones al especialista por correo;
+- panel de seguimiento con graficas;
+- reportes PDF o CSV;
+- historial completo de mensajes enviados y recibidos;
+- baja automatica del canal WhatsApp por respuestas entrantes;
+- reintentos automaticos de envio.
