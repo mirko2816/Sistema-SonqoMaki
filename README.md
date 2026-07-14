@@ -10,7 +10,7 @@ Una aplicación interna para registrar pacientes, asignarles una rutina, compart
 
 ---
 
-🚧 **Proyecto en desarrollo.**, ahora estamos en una fase de depuración de casos de uso y alcance del sistema. Se esta priorizando una entraga del producto que empiece a resolver problemas, e ir incrementando caracteristicas mas adelante. Aun no hay código. 
+🚧 **Proyecto en desarrollo**, ahora estamos en una fase de depuración de casos de uso y alcance del sistema. Se esta priorizando una entraga del producto que empiece a resolver problemas, e ir incrementando caracteristicas mas adelante. Aun no hay código. 
 
 ## Estructura esperada del proyecto
 
