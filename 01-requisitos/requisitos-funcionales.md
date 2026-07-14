@@ -293,6 +293,18 @@ Si el plan esta finalizado, el enlace debe mostrar una pagina estatica indicando
 
 El sistema debe rechazar enlaces invalidos o revocados mostrando un estado claro, sin exponer datos del paciente.
 
+### RF-PUB-008 Tratamiento de enlaces antiguos
+
+Los enlaces publicos generados previamente deben continuar asociados al plan, no a una rutina especifica. Cada vez que el paciente abra uno de estos enlaces, el sistema debe localizar el plan y evaluar su estado y sus fechas usando el dia calendario de `America/Lima`.
+
+El resultado debe corresponder al estado actual del plan:
+
+- si esta en pausa, debe mostrar una pagina estatica con el mensaje: "Su plan de ejercicios se encuentra pausado. Comuniquese con el especialista encargado";
+- si esta finalizado o la fecha actual es posterior a su fecha de fin, debe mostrar una pagina estatica con el mensaje: "Plan de ejercicios finalizado. Para mas consultas, comuniquese con el especialista encargado";
+- si esta activo, la fecha actual esta dentro de su rango y existe exactamente una rutina vigente, debe dirigir a la pagina publica de esa rutina.
+
+Un enlace antiguo no debe conservar ni exponer una rutina que dejo de estar vigente. Si el enlace es invalido o revocado, la fecha actual es anterior al inicio del plan o no existe exactamente una rutina vigente, el sistema debe mostrar un estado generico no disponible sin exponer datos personales, rutinas pasadas ni rutinas futuras.
+
 ## 9. Recordatorios
 
 ### RF-REC-001 Configurar recordatorios por plan

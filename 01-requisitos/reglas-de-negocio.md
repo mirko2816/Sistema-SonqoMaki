@@ -93,10 +93,27 @@ Si alguna condicion no se cumple, el sistema no debe intentar el envio.
 
 Cada combinacion de plan, fecha y horario programado debe producir como maximo un intento de envio, incluso si el proceso de programacion se ejecuta mas de una vez.
 
-## 5. Decisiones relacionadas
+## 5. Pagina publica
+
+### RN-PUB-001 Resolucion actual de enlaces publicos
+
+El enlace publico identifica de forma segura a un plan y no fija una rutina concreta. Por ello, un enlace enviado anteriormente debe resolverse nuevamente cada vez que se abre, usando el estado actual del plan y la fecha calendario de `America/Lima`.
+
+El sistema debe aplicar esta prioridad:
+
+1. Validar que el enlace sea autentico, no este revocado y corresponda a un plan existente.
+2. Si el plan esta en pausa, mostrar el estado estatico de plan pausado, independientemente de que exista una rutina para la fecha.
+3. Si el plan esta finalizado o la fecha actual es posterior a su fecha de fin, mostrar el estado estatico de plan finalizado.
+4. Si el plan esta activo y la fecha actual esta dentro de su rango, localizar exactamente una rutina cuya fecha inicial y final inclusivas contengan la fecha actual y mostrarla.
+5. En cualquier otro caso, mostrar un estado generico no disponible.
+
+La resolucion no debe cambiar el plan, reactivar recordatorios ni permitir el acceso directo a una rutina pasada o futura. La fecha posterior al fin prevalece sobre un estado `activo` que aun no haya sido actualizado de forma persistente.
+
+## 6. Decisiones relacionadas
 
 - El limite de dos recordatorios se controla por plan, aunque un paciente tenga varios planes.
 - Un paciente puede tener varios planes activos y rutinas vigentes el mismo dia.
 - Un telefono queda disponible para otro paciente despues de eliminar definitivamente al paciente que lo tenia asignado.
 - Las fechas se manejan por dia calendario en la zona horaria de la clinica, inicialmente `America/Lima`.
 - Las reglas de rango, no superposicion y continuidad deben validarse nuevamente cuando cambien las fechas de un plan o de cualquiera de sus rutinas.
+- Los enlaces publicos antiguos conservan su utilidad porque apuntan al plan, pero siempre muestran el resultado que corresponde al momento de la consulta.
