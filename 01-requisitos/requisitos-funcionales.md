@@ -68,7 +68,7 @@ El sistema debe permitir registrar pacientes con los datos minimos del MVP:
 
 ### RF-PAC-002 Validacion de datos del paciente
 
-El sistema debe validar que el telefono tenga formato peruano `+51` y que el DNI no se repita entre pacientes registrados.
+El sistema debe validar que el telefono tenga formato peruano `+51`, que el telefono normalizado no se repita entre pacientes registrados y que el DNI no se repita entre pacientes registrados.
 
 ### RF-PAC-003 Listado de pacientes
 

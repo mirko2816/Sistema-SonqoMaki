@@ -16,9 +16,6 @@ Una aplicación interna para registrar pacientes, asignarles una rutina, compart
 
 ---
 
-
-
-
 ```
 docs/
 ├── 00-producto/

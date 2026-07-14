@@ -2,11 +2,11 @@
 
 > Estado: depurado para MVP  
 > Fecha: 13 de julio de 2026  
-> Fuentes: `vision-del-producto.md`, `alcance-mvp.md`, `fuera-del-alcance-MVP.md` y PDF "Requisitos Funcionales y No Funcionales (1).pdf"
+> Fuentes: `vision-del-producto.md`, `alcance-mvp.md`, `fuera-del-alcance-MVP.md` y PDF "Requisitos Funcionales y No Funcionales - antiguo.pdf"
 
 ## 1. Criterio de depuracion
 
-Estos requisitos no funcionales se ajustan al MVP: una aplicacion web responsive, inicialmente local, operada por un especialista, con alrededor de 10 a 20 pacientes y dos recordatorios diarios por paciente.
+Estos requisitos no funcionales se ajustan al MVP: una aplicacion web responsive, inicialmente local, operada por un especialista, con alrededor de 10 a 20 pacientes y hasta dos recordatorios diarios por plan de ejercicios.
 
 Se reducen o posponen metas pensadas para una plataforma productiva amplia, como disponibilidad mensual del 99%, soporte de cientos de pacientes, auditoria avanzada, alertas, reportes y configuracion administrativa desde la interfaz.
 
@@ -78,7 +78,7 @@ El sistema debe operar inicialmente con aproximadamente 10 a 20 pacientes.
 
 ### RNF-REN-002 Carga esperada de recordatorios
 
-El sistema debe soportar al menos dos recordatorios diarios por paciente para la capacidad inicial del MVP.
+El sistema debe soportar hasta dos recordatorios diarios por plan de ejercicios para la capacidad inicial del MVP.
 
 ### RNF-REN-003 Tiempo de respuesta de pantallas frecuentes
 
@@ -178,7 +178,7 @@ El sistema debe validar que existan paciente activo, consentimiento, telefono va
 
 ## 9. Requisitos no funcionales pospuestos o ajustados
 
-Los siguientes requisitos del PDF se posponen o ajustan para el MVP:
+Los siguientes requisitos se posponen o ajustan para el MVP:
 
 - disponibilidad mensual de 99%;
 - ventana formal de mantenimiento productivo;
