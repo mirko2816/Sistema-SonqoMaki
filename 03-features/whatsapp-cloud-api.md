@@ -26,4 +26,3 @@ WhatsApp Cloud API es un servicio externo, no un usuario del producto. Estas fea
 ## Límites del actor
 
 En el MVP, una aceptación técnica no demuestra entrega, lectura ni cumplimiento. No se procesan respuestas del paciente, estados detallados posteriores ni reintentos automáticos.
-

@@ -50,18 +50,10 @@ docs/
 │ └── CU-WA-001-enviar-recordatorio.md
 │
 ├── 03-features/
-│ ├── autenticacion/
-│ │ └── iniciar-sesion.feature
-│ ├── pacientes/
-│ │ ├── registrar-paciente.feature
-│ │ └── editar-paciente.feature
-│ ├── planes/
-│ │ └── crear-plan.feature
-│ ├── rutinas/
-│ │ └── visualizar-rutina-publica.feature
-│ └── recordatorios/
-│ ├── programar-recordatorio.feature
-│ └── enviar-recordatorio-whatsapp.feature
+│ ├── especialista.md
+│ ├── paciente.md
+│ ├── reloj-del-sistema.md
+│ ├── whatsapp-cloud-api.md
 │
 ├── 04-arquitectura/
 │ ├── arquitectura-general.md

@@ -116,4 +116,3 @@ Este archivo funciona como catálogo de capacidades orientado al valor del actor
 ## Límites del actor
 
 El especialista no administra cuentas, roles, archivos, credenciales de WhatsApp, respuestas del paciente, reintentos, métricas ni reportes en el MVP. El catálogo completo de exclusiones se mantiene en [fuera-del-alcance-MVP.md](../00-producto/fuera-del-alcance-MVP.md).
-

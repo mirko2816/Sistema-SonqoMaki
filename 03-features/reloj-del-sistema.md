@@ -26,4 +26,3 @@ El reloj es un actor técnico que inicia trabajo en el momento programado. Las v
 ## Límites del actor
 
 El reloj no decide contenido clínico, no corrige configuraciones, no recupera ejecuciones omitidas y no inicia reintentos automáticos.
-
