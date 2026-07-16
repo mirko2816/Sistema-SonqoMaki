@@ -1,6 +1,6 @@
 # Visión del producto — Sonqo Maki
 
-> Estado: propuesta en revisión para MVP  
+> Estado: aprobado para el MVP
 > Fecha: 11 de julio de 2026  
 > Alcance: Fase 1 — MVP
 
@@ -45,9 +45,9 @@ Validar en el uso cotidiano de una clínica pequeña que un solo especialista pu
 1. registrar un paciente;
 2. crearle un plan con una o más rutinas;
 3. agregar ejercicios con enlaces de YouTube a cada rutina;
-4. programar uno o varios recordatorios diarios;
+4. programar hasta dos recordatorios diarios por plan;
 5. enviar automáticamente por WhatsApp un enlace seguro a la rutina; y
-6. comprobar si cada intento de envío fue exitoso o falló.
+6. comprobar si cada ejecución fue omitida o si la solicitud a WhatsApp fue aceptada o falló.
 
 ## 7. Alcance funcional incluido
 
@@ -69,36 +69,36 @@ extendido en [alcance-mvp.md](alcance-mvp.md)    
 ### 7.3. Biblioteca de ejercicios
 
 - Crear, listar, editar y seleccionar ejercicios.
-- Cada ejercicio tendrá como mínimo nombre, descripción opcional y enlace de YouTube.
+- Cada ejercicio tendrá como mínimo un nombre. Podrá incluir descripción y una URL externa opcional; YouTube será el caso habitual.
 - No se almacenarán imágenes, videos, documentos ni otros archivos propios en el MVP.
 
 ### 7.4. Planes y rutinas
-
-descrito a detalle en [features/atutenticacion](features/autenticacion.md)
 
 - Incluir una o más rutinas dentro del plan de modo que las rutinas sean contiguas en la fecha limite del plan de ejercicios.
 - Agregar uno o más ejercicios de la biblioteca a cada rutina.
 - Definir indicaciones básicas por ejercicio, como orden, series, repeticiones o duración cuando corresponda.
 - Editar la composición y las indicaciones del plan y sus rutinas.
+- Guardar rutinas reutilizables en una biblioteca y usarlas como base para crear copias editables dentro de un plan.
 
 ### 7.5. Página de rutina
 
-- Generar un enlace seguro asociado al plan del paciente.
+- Generar automáticamente un enlace seguro al activar el plan por primera vez.
+- Mantener cada enlace asociado exclusivamente a su plan; no puede reutilizarse para otro plan.
 - Permitir que el paciente consulte la rutina sin crear una cuenta ni iniciar sesión.
 - Mostrar únicamente la información necesaria para realizar los ejercicios.
-- Rechazar enlaces inválidos, vencidos o revocados.
+- Rechazar enlaces inválidos o revocados y mostrar un estado claro cuando el plan no esté disponible.
 
 ### 7.6. Recordatorios
 
 - Programar uno o varios horarios diarios para un plan.
 - Activar, editar o desactivar la programación.
-- Ejecutar automáticamente los recordatorios en la zona horaria configurada para la clínica.
+- Ejecutar automáticamente los recordatorios en la zona horaria fija `America/Lima`.
 
 ### 7.7. WhatsApp y registro técnico
 
 - Enviar mediante WhatsApp Cloud API un mensaje basado en una plantilla aprobada que incluya el enlace a la rutina.
-- Guardar por cada intento la fecha y hora, el paciente, el recordatorio relacionado, el identificador devuelto por WhatsApp y un estado técnico básico.
-- Distinguir como mínimo entre envío aceptado/exitoso y envío fallido.
+- Guardar por cada ejecución la fecha y hora, el paciente, el recordatorio relacionado y su resultado, incluso cuando se omita antes de contactar a WhatsApp.
+- Distinguir entre ejecución omitida, solicitud aceptada por WhatsApp y solicitud fallida.
 - Guardar el código o detalle técnico del error cuando esté disponible.
 
 ## 8. Flujo principal del producto
@@ -110,7 +110,7 @@ descrito a detalle en [features/atutenticacion](features/autenticacion.md)
 5. Programa uno o varios recordatorios diarios.
 6. Al llegar un horario programado, el sistema genera o selecciona un enlace seguro y envía el recordatorio mediante WhatsApp.
 7. El paciente abre el enlace y consulta su rutina.
-8. El sistema registra si WhatsApp aceptó el envío o si ocurrió un error.
+8. El sistema registra si la ejecución fue omitida o si WhatsApp aceptó o rechazó la solicitud.
 9. El especialista puede consultar ese resultado técnico.
 
 ## 9. Principios de producto
@@ -132,17 +132,17 @@ El MVP se considerará funcional cuando, en un entorno real de prueba de Sonqo M
 - los recordatorios se ejecuten en los horarios programados;
 - cada intento de envío deje un resultado técnico consultable;
 - los fallos no provoquen pérdida silenciosa de información ni envíos duplicados por la misma ejecución; y
-- el sistema pueda operar inicialmente con aproximadamente 10 pacientes y dos recordatorios diarios por paciente, sin diseñar prematuramente para una escala mayor.
+- el sistema pueda operar inicialmente con aproximadamente 10 a 20 pacientes y hasta dos recordatorios diarios por plan, sin diseñar prematuramente para una escala mayor.
 
 ## 11. Restricciones y supuestos
 
 - El MVP será exclusivo para la clínica Sonqo Maki.
 - Existirá una sola cuenta operativa del especialista.
 - El paciente debe haber autorizado previamente la recepción de mensajes por WhatsApp.
-- Los videos serán proporcionados mediante enlaces de YouTube; Sonqo Maki no controla su disponibilidad futura.
+- El material se proporcionará mediante URLs externas opcionales; YouTube será el caso habitual y Sonqo Maki no controlará la disponibilidad futura de esos recursos.
 - El envío depende de la disponibilidad, credenciales, políticas, plantillas aprobadas y costos de WhatsApp Cloud API.
 - Un resultado aceptado por la API confirma la recepción técnica de la solicitud, no que el paciente haya leído o realizado la rutina.
-- La duración, renovación y revocación exactas del enlace seguro se definirán como una regla de negocio específica antes de implementar esta función.
+- El enlace público no vence automáticamente. Solo una operación técnica autorizada podrá revocarlo o rotarlo por seguridad.
 
 ## 12. Regla para aceptar nuevas funciones
 
