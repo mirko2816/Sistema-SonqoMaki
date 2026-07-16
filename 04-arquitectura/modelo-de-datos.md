@@ -15,7 +15,7 @@ El modelo deriva de la documentación de producto, requisitos, reglas de negocio
 - Las fechas de planes y rutinas usan `date`, porque representan días calendario.
 - Los horarios de recordatorio usan `time without time zone` y se interpretan siempre en `America/Lima`.
 - Las entidades funcionales recuperables usan `deleted_at` para eliminación lógica.
-- Los registros técnicos de recordatorios y webhooks no usan eliminación lógica ni se eliminan durante el MVP.
+- Los registros técnicos de recordatorios no usan eliminación lógica ni se eliminan durante el MVP.
 - Todos los textos obligatorios deben guardarse recortados y no pueden quedar vacíos.
 - Los estados se almacenan como texto con restricciones `CHECK`, evitando depender de enums nativos de PostgreSQL en la primera versión.
 - Las reglas que involucran varias filas o tablas se validan dentro de transacciones de aplicación y, cuando sea posible, se refuerzan con índices o restricciones de PostgreSQL.
@@ -24,13 +24,11 @@ El modelo deriva de la documentación de producto, requisitos, reglas de negocio
 
 Este modelo adopta las siguientes decisiones:
 
-1. **Eliminación lógica:** reemplaza la eliminación física en cascada descrita en `RF-PAC-008` y `CU-PAC-005`. Los datos funcionales se conservan para recuperación y el historial técnico nunca se elimina ni anonimiza en el MVP.
-2. **Biblioteca de rutinas:** se mantiene dentro del MVP por decisión posterior, aunque aparezca como excluida en `fuera-del-alcance-MVP.md`.
-3. **Webhooks de WhatsApp:** se reciben en el MVP para conservar eventos técnicos y actualizar el último estado conocido. No se implementa una bandeja de conversaciones ni respuestas del paciente.
-4. **Tokens públicos:** el sistema genera valores criptográficamente seguros. Su revocación o reemplazo se inicia manualmente mediante una operación técnica durante el MVP; una persona nunca redacta el valor del token.
-5. **Historial preservado:** los registros de ejecuciones conservan referencias y copias mínimas de identificación, aunque el paciente o el plan se eliminen lógicamente.
-
-Los documentos mencionados deberán alinearse posteriormente con estas decisiones para evitar implementaciones contradictorias.
+1. **Archivo lógico:** los datos funcionales se conservan para recuperación y el historial técnico mínimo permanece disponible. La purga se definirá antes del despliegue productivo.
+2. **Biblioteca de rutinas:** forma parte del MVP y produce copias independientes dentro de los planes.
+3. **Sin webhooks:** el MVP conserva solamente el resultado inmediato de la solicitud a WhatsApp.
+4. **Tokens públicos:** se generan al activar un plan por primera vez, pertenecen exclusivamente a ese plan y solo una operación técnica autorizada puede revocarlos o rotarlos.
+5. **Historial preservado:** las ejecuciones conservan referencias y copias mínimas de identificación aunque el paciente o el plan se archiven.
 
 ## 4. Diagrama entidad-relación
 
@@ -55,7 +53,6 @@ erDiagram
     ROUTINES o|--o{ REMINDER_EXECUTIONS : "resuelve"
     PUBLIC_LINKS o|--o{ REMINDER_EXECUTIONS : "utiliza"
 
-    REMINDER_EXECUTIONS o|--o{ WHATSAPP_WEBHOOK_EVENTS : "actualiza"
 ```
 
 La relación entre ejercicios de biblioteca y ejercicios configurados es opcional desde la copia hacia el origen. La copia conserva todos los valores necesarios y continúa siendo válida aunque el ejercicio original se elimine lógicamente.
@@ -108,7 +105,7 @@ Representa al paciente sin cuenta que recibe recordatorios y posee planes.
 | `id`                    | `bigint`       | No      | Clave primaria                                   |
 | `first_names`           | `varchar(120)` | No      | Texto no vacío                                   |
 | `last_names`            | `varchar(120)` | No      | Texto no vacío                                   |
-| `dni`                   | `varchar(8)`   | No      | Ocho dígitos, conserva ceros iniciales           |
+| `dni`                   | `varchar(8)`   | Sí      | Ocho dígitos cuando exista; conserva ceros iniciales |
 | `whatsapp_phone`        | `varchar(12)`  | No      | Formato canónico `+51` más nueve dígitos         |
 | `status`                | `varchar(20)`  | No      | `active` o `inactive`; inicial `active`          |
 | `whatsapp_consented_on` | `date`         | Sí      | Evidencia básica de consentimiento               |
@@ -118,7 +115,7 @@ Representa al paciente sin cuenta que recibe recordatorios y posee planes.
 
 Restricciones e índices:
 
-- `CHECK (dni ~ '^[0-9]{8}$')`.
+- `CHECK (dni IS NULL OR dni ~ '^[0-9]{8}$')`.
 - `CHECK (whatsapp_phone ~ '^\\+51[0-9]{9}$')`.
 - `CHECK (status IN ('active', 'inactive'))`.
 - Unicidad global de `dni` y `whatsapp_phone`, incluyendo registros eliminados lógicamente.
@@ -272,7 +269,7 @@ Editar `exercises` nunca actualiza estas filas. Esta duplicación deliberada evi
 
 ### 5.10 `public_links`
 
-Mantiene el enlace seguro asociado a un plan. Los registros revocados se conservan para trazabilidad.
+Mantiene el enlace seguro asociado exclusivamente a un plan. El primer enlace se crea durante la primera activación válida; los registros revocados se conservan para trazabilidad y nunca se reasignan a otro plan.
 
 | Columna            | Tipo          | Nulable | Reglas                                      |
 | ------------------ | ------------- | ------- | ------------------------------------------- |
@@ -291,6 +288,7 @@ Reglas:
 - La búsqueda pública calcula SHA-256 del token recibido y consulta `token_hash`.
 - `token_ciphertext` permite reconstruir la URL para futuros recordatorios sin almacenar el token en texto plano.
 - Solo puede existir un enlace no revocado por plan mediante índice único parcial sobre `plan_id WHERE revoked_at IS NULL`.
+- Un enlace no puede cambiar de `plan_id` después de crearse.
 - No existe `expires_at`: el enlace no vence automáticamente. La disponibilidad depende del token, el plan, sus fechas y su estado.
 - Reemplazar un token revoca el actual y crea otro dentro de una transacción.
 - El token completo no se escribe en logs ni en el historial de envíos.
@@ -359,11 +357,9 @@ Es el historial persistente de cada combinación programada procesada. También 
 | `provider_http_status`     | `smallint`     | Sí      | Código HTTP si hubo llamada                    |
 | `provider_error_code`      | `varchar(100)` | Sí      | Código técnico seguro                          |
 | `provider_error_detail`    | `text`         | Sí      | Detalle sanitizado, sin credenciales           |
-| `provider_status`          | `varchar(50)`  | Sí      | Último estado técnico conocido por webhook     |
-| `provider_status_at`       | `timestamptz`  | Sí      | Momento del último estado conocido             |
 | `duration_ms`              | `integer`      | Sí      | Duración total no negativa                     |
 | `created_at`               | `timestamptz`  | No      | Auditoría técnica                              |
-| `updated_at`               | `timestamptz`  | No      | Actualización del resultado o webhook          |
+| `updated_at`               | `timestamptz`  | No      | Actualización del resultado                     |
 
 Restricciones e índices:
 
@@ -397,34 +393,6 @@ Motivos iniciales recomendados:
 
 `ALREADY_PROCESSED` se escribe en el log de aplicación cuando el `INSERT` pierde el conflicto de unicidad; no se crea una segunda fila en esta tabla.
 
-### 5.14 `whatsapp_webhook_events`
-
-Conserva los eventos técnicos recibidos desde WhatsApp y permite procesarlos de forma idempotente.
-
-| Columna                 | Tipo           | Nulable | Reglas                                                      |
-| ----------------------- | -------------- | ------- | ----------------------------------------------------------- |
-| `id`                    | `bigint`       | No      | Clave primaria                                              |
-| `deduplication_key`     | `char(64)`     | No      | SHA-256 de los campos estables del evento, único            |
-| `reminder_execution_id` | `bigint`       | Sí      | FK a `reminder_executions.id` cuando se reconoce el mensaje |
-| `whatsapp_message_id`   | `varchar(255)` | Sí      | Identificador externo recibido                              |
-| `event_type`            | `varchar(80)`  | No      | Tipo normalizado del evento                                 |
-| `provider_status`       | `varchar(50)`  | Sí      | Estado informado por Meta                                   |
-| `occurred_at`           | `timestamptz`  | Sí      | Fecha informada por el proveedor                            |
-| `received_at`           | `timestamptz`  | No      | Fecha de recepción local                                    |
-| `processing_status`     | `varchar(20)`  | No      | `processed`, `ignored` o `failed`                           |
-| `processing_detail`     | `text`         | Sí      | Motivo sanitizado                                           |
-| `safe_payload`          | `jsonb`        | Sí      | Subconjunto técnico permitido del evento                    |
-| `created_at`            | `timestamptz`  | No      | Auditoría técnica                                           |
-| `updated_at`            | `timestamptz`  | No      | Control de procesamiento                                    |
-
-Restricciones e índices:
-
-- Unicidad sobre `deduplication_key`.
-- Índices sobre `whatsapp_message_id`, `reminder_execution_id`, `received_at` y `processing_status`.
-- `CHECK (processing_status IN ('processed', 'ignored', 'failed'))`.
-
-`safe_payload` no debe contener secretos de integración, tokens públicos completos ni contenido de conversaciones entrantes. Si llega un mensaje del paciente, se ignora de forma controlada y solo se conserva la metadata técnica necesaria para diagnosticar el webhook.
-
 ## 6. Relaciones y cardinalidades
 
 | Origen                    | Relación        | Destino                      | Regla                                                  |
@@ -438,7 +406,6 @@ Restricciones e índices:
 | `reminder_configurations` | 1 a N           | `reminder_schedules`         | Puede no tener horarios mientras se configura          |
 | `plans`                   | 1 a N histórico | `public_links`               | Solo uno puede estar vigente a la vez                  |
 | `plans`                   | 1 a N           | `reminder_executions`        | El historial se conserva permanentemente en el MVP     |
-| `reminder_executions`     | 1 a N           | `whatsapp_webhook_events`    | Puede recibir varios estados técnicos                  |
 
 Todos los datos funcionales son compartidos por los especialistas autenticados del MVP. No se agrega `user_id` como propietario de pacientes, ejercicios o planes porque no existe multi-tenencia ni visibilidad separada por especialista.
 
@@ -466,7 +433,7 @@ La activación debe ejecutarse en una transacción que bloquee la fila del plan 
 8. La última rutina termina en `plans.ends_on`.
 9. Cada rutina tiene al menos un ejercicio no eliminado.
 
-Solo después de validar todo se cambia `plans.status` a `active`.
+Solo después de validar todo se genera el enlace público, si es la primera activación, y se cambia `plans.status` a `active`. Si el plan está `finished`, la activación se rechaza porque ese estado es terminal.
 
 ### 8.2 Modificar planes o rutinas
 
@@ -482,8 +449,8 @@ La duplicación se realiza en una única transacción:
 2. Copia las rutinas.
 3. Copia los `routine_exercises` con sus valores y posiciones.
 4. Crea `reminder_configurations` inactiva.
-5. Puede copiar horarios como configuración editable, manteniendo `is_active = false`.
-6. No copia enlaces públicos, ejecuciones, estados de WhatsApp ni webhooks.
+5. No copia ningún horario de recordatorio.
+6. No copia enlaces públicos, ejecuciones ni resultados de WhatsApp.
 
 No se necesita guardar `source_plan_id`: después de la copia ambos planes son independientes.
 
@@ -497,18 +464,9 @@ La primera escritura del proceso es un `INSERT` en `reminder_executions` con `ou
 - No se crean reintentos automáticos.
 - Una ejecución que quede en `processing` por una caída debe mostrarse como incompleta para diagnóstico; no debe retomarse automáticamente en el MVP porque hacerlo podría duplicar un envío cuyo resultado externo se desconoce.
 
-### 8.5 Procesar un webhook
-
-1. Se valida la firma antes de persistir el evento.
-2. Se calcula una llave estable de deduplicación.
-3. Se inserta el evento con una operación tolerante a conflictos.
-4. Si `whatsapp_message_id` coincide, se relaciona la ejecución.
-5. Se actualiza `provider_status` solo si el evento es más reciente que `provider_status_at`.
-6. Eventos duplicados responden correctamente a Meta sin procesarse otra vez.
-
 ## 9. Eliminación lógica y restauración
 
-### 9.1 Eliminar un paciente
+### 9.1 Archivar un paciente
 
 La operación debe ser transaccional y:
 
@@ -517,7 +475,7 @@ La operación debe ser transaccional y:
 - cambiar a `paused` los planes no eliminados del paciente, sin marcar como eliminados sus descendientes;
 - desactivar las configuraciones de recordatorios;
 - revocar sus enlaces públicos vigentes;
-- conservar sin cambios `reminder_executions` y `whatsapp_webhook_events`;
+- conservar sin cambios `reminder_executions`;
 - no modificar `exercises`, `routine_templates` ni sus ejercicios.
 
 El paciente funciona como la marca de eliminación del agregado completo. Sus planes, rutinas, ejercicios configurados y horarios permanecen almacenados y se excluyen de las consultas porque su paciente raíz está eliminado. Esto evita perder la configuración y evita restaurar accidentalmente elementos que ya se habían eliminado de forma individual antes de eliminar al paciente.
@@ -568,8 +526,6 @@ reminder_configurations:    unique plan_id
 reminder_schedules:         index configuration + weekday, unique parcial configuration + weekday + time
 reminder_executions:        unique plan + local date + local time, unique correlation_id,
                             unique parcial whatsapp_message_id, index started_at, outcome, patient_id, plan_id
-whatsapp_webhook_events:    unique deduplication_key, index whatsapp_message_id,
-                            reminder_execution_id, received_at, processing_status
 ```
 
 ## 12. Datos que deliberadamente no se almacenan
@@ -591,11 +547,10 @@ whatsapp_webhook_events:    unique deduplication_key, index whatsapp_message_id,
 
 El modelo inicial adopta supuestos conservadores donde la documentación no fija un detalle:
 
-- El DNI peruano se representa como ocho dígitos y se guarda como texto.
+- El DNI es opcional; cuando existe se representa como ocho dígitos y se guarda como texto.
 - La duración se persiste en segundos enteros positivos.
 - Los días de semana siguen ISO-8601, de lunes `1` a domingo `7`.
 - Existe como máximo un enlace público no revocado por plan.
-- Los eventos técnicos seguros del webhook pueden conservarse en `jsonb`; el subconjunto exacto se definirá al documentar la integración con Meta.
 - Las cuentas autenticadas comparten la información de la clínica porque no existe propiedad por especialista.
 - La retención y purga física quedan fuera del MVP.
 
@@ -611,8 +566,7 @@ Cambiar cualquiera de estos supuestos debe producir una actualización de este d
 6. Crear `public_links`.
 7. Crear `reminder_configurations` y `reminder_schedules`.
 8. Crear `reminder_executions`.
-9. Crear `whatsapp_webhook_events`.
-10. Agregar índices parciales, exclusión de rangos y restricciones finales.
+9. Agregar índices parciales, exclusión de rangos y restricciones finales.
 
 Cada migración debe tener una reversión definida y las restricciones críticas deben comprobarse con pruebas contra PostgreSQL real, no únicamente con una base de datos SQLite en memoria.
 
@@ -631,7 +585,6 @@ Cada migración debe tener una reversión definida y las restricciones críticas
 - La llave de ejecución impide un segundo intento para plan, fecha y hora.
 - Una omisión no realiza llamadas a WhatsApp y conserva su motivo.
 - Una aceptación de WhatsApp no se interpreta como entrega ni lectura.
-- Un webhook duplicado no genera un segundo procesamiento.
 - La eliminación lógica conserva el historial técnico.
 - La restauración no reactiva automáticamente planes, recordatorios ni enlaces.
 
@@ -646,5 +599,5 @@ Cada migración debe tener una reversión definida y las restricciones críticas
 | `RF-RUT-001` a `RF-RUT-008`, `RN-RUT-001` a `RN-RUT-003` | `routines`, `routine_exercises`, `routine_templates`, `routine_template_exercises` |
 | `RF-PUB-001` a `RF-PUB-008`, `RN-PUB-001`                | `public_links`, `plans`, `routines`, `routine_exercises`                           |
 | `RF-REC-001` a `RF-REC-009`, `RN-REC-001` a `RN-REC-003` | `reminder_configurations`, `reminder_schedules`, `reminder_executions`             |
-| `RF-WPP-001` a `RF-WPP-006`, `CU-ENV-001`                | `reminder_executions`, `whatsapp_webhook_events`                                   |
+| `RF-WPP-001` a `RF-WPP-006`, `CU-ENV-001`                | `reminder_executions`                                                              |
 | `RNF-DAT-001` a `RNF-DAT-004`                            | Restricciones, índices y transacciones de todo el modelo                           |
