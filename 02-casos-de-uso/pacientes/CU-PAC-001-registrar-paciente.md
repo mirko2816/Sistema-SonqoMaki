@@ -16,10 +16,10 @@ Registrar los datos minimos de un paciente y la evidencia de su consentimiento p
 ## Flujo principal
 
 1. El especialista selecciona `Nuevo paciente`.
-2. El sistema solicita nombres, apellidos, DNI, telefono WhatsApp peruano, estado y fecha de consentimiento.
+2. El sistema solicita nombres, apellidos, telefono WhatsApp peruano, estado y fecha de consentimiento; el DNI es opcional.
 3. El especialista completa los datos y confirma el registro.
 4. El sistema elimina separadores del telefono y lo normaliza a `+51` seguido de nueve digitos.
-5. El sistema valida campos obligatorios, formato, DNI no repetido y telefono normalizado no repetido.
+5. El sistema valida campos obligatorios, formato, telefono normalizado no repetido y, cuando se proporcione, DNI de ocho digitos no repetido.
 6. El sistema guarda al paciente y muestra su detalle.
 
 ## Flujo alternativo
@@ -28,7 +28,7 @@ Registrar los datos minimos de un paciente y la evidencia de su consentimiento p
 
 ## Excepciones (si aplica)
 
-- Si el DNI o telefono ya pertenece a otro paciente activo o inactivo, el sistema rechaza el registro e identifica el conflicto.
+- Si el DNI o telefono ya pertenece a otro paciente activo, inactivo o archivado, el sistema rechaza el registro e identifica el conflicto.
 - Si un dato es invalido, el sistema conserva los valores ingresados y solicita corregirlos.
 
 ## Postcondiciones

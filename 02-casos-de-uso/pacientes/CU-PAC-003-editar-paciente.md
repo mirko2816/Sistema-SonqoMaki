@@ -16,9 +16,9 @@ Actualizar los datos basicos o la evidencia de consentimiento de un paciente.
 ## Flujo principal
 
 1. El especialista abre el detalle del paciente y selecciona `Editar`.
-2. El sistema muestra nombres, apellidos, DNI, telefono y fecha de consentimiento actuales.
+2. El sistema muestra nombres, apellidos, DNI opcional, telefono y fecha de consentimiento actuales.
 3. El especialista modifica los campos y confirma.
-4. El sistema normaliza el telefono y valida campos, formatos, DNI y telefono unicos.
+4. El sistema normaliza el telefono y valida campos, formatos, telefono unico y, cuando exista, DNI unico.
 5. El sistema guarda los cambios y muestra el detalle actualizado.
 
 ## Flujo alternativo

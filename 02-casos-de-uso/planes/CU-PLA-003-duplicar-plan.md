@@ -20,8 +20,8 @@ Reutilizar la estructura de un plan existente creando una copia independiente pa
 2. El sistema solicita el paciente de destino y muestra la estructura que se copiara.
 3. El especialista confirma.
 4. El sistema copia datos del plan, rutinas, orden y configuracion de ejercicios.
-5. El sistema crea la copia `en pausa`, sin historial, enlace ni intentos de envio del origen.
-6. El sistema muestra la copia para ajustar fechas, rutinas, recordatorios y estado.
+5. El sistema crea la copia `en pausa`, con una configuracion de recordatorios vacia e inactiva, sin historial, enlace ni ejecuciones del origen.
+6. El sistema muestra la copia para ajustar fechas, rutinas, ejercicios y estado, y configurar nuevos recordatorios cuando corresponda.
 
 ## Flujo alternativo
 
@@ -35,7 +35,8 @@ Reutilizar la estructura de un plan existente creando una copia independiente pa
 ## Postcondiciones
 
 - Existe un nuevo plan editable sin vinculos operativos con el original.
-- Editar o eliminar una copia no afecta a la otra.
+- No se copiaron dias ni horarios de recordatorio.
+- Editar o archivar una copia no afecta a la otra.
 
 ## Reglas del negocio relacionadas
 

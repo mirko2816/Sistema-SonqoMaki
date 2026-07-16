@@ -31,6 +31,7 @@ Definir la cobertura temporal del plan mediante rutinas contiguas y configurar l
 - El especialista puede editar o quitar rutinas y ejercicios mientras configura el plan.
 - Se permite guardar temporalmente una configuracion incompleta si el plan queda `en pausa`.
 - Al cambiar valores de un ejercicio dentro de la rutina, el ejercicio original de la biblioteca no cambia.
+- El especialista puede partir de una plantilla de la biblioteca; el sistema copia la rutina y sus ejercicios al plan sin mantener dependencia editable con la plantilla.
 
 ## Excepciones (si aplica)
 

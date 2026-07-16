@@ -25,7 +25,7 @@ Encontrar pacientes y consultar sus datos basicos, estado y planes asociados.
 
 ## Excepciones (si aplica)
 
-- Si el paciente fue eliminado antes de abrir su detalle, el sistema informa que ya no existe y actualiza el listado.
+- Si el paciente fue archivado antes de abrir su detalle, el sistema informa que ya no está disponible en el listado operativo y actualiza la vista.
 
 ## Postcondiciones
 

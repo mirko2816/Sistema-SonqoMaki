@@ -29,12 +29,13 @@ Crear para un paciente un plan independiente con rango de fechas, rutinas y reco
 
 ## Excepciones (si aplica)
 
-- Si el paciente esta inactivo o fue eliminado, el sistema rechaza la creacion.
+- Si el paciente esta inactivo o archivado, el sistema rechaza la creacion.
 - Si las fechas son invalidas, el sistema no crea el plan.
 
 ## Postcondiciones
 
-- Existe un plan independiente `en pausa`, con sus propias rutinas, recordatorios, enlace e historial.
+- Existe un plan independiente `en pausa`, con sus propias rutinas, configuracion de recordatorios e historial.
+- Todavia no existe un enlace publico; se generara automaticamente durante la primera activacion valida.
 - No se activa hasta tener cobertura continua y al menos un ejercicio por rutina.
 
 ## Reglas del negocio relacionadas

@@ -1,8 +1,8 @@
-# CU-ENV-001 - Consultar historial tecnico de envios
+# CU-ENV-001 - Consultar historial tecnico de recordatorios
 
 ## Objetivo
 
-Permitir que el especialista compruebe si cada solicitud de recordatorio fue aceptada o fallo tecnicamente.
+Permitir que el especialista compruebe si cada ejecucion programada fue omitida o si la solicitud fue aceptada o fallo tecnicamente.
 
 ## Actores
 
@@ -14,15 +14,15 @@ Permitir que el especialista compruebe si cada solicitud de recordatorio fue ace
 
 ## Flujo principal
 
-1. El especialista abre el historial de envios.
-2. El sistema lista los intentos en orden cronologico de mas reciente a mas antiguo.
-3. Para cada intento muestra fecha y hora, paciente, plan, recordatorio y estado tecnico.
-4. El especialista abre un intento.
+1. El especialista abre el historial de recordatorios.
+2. El sistema lista las ejecuciones en orden cronologico de mas reciente a mas antiguo.
+3. Para cada ejecucion muestra fecha y hora, paciente, plan, recordatorio y resultado: omitido, aceptado o fallido.
+4. El especialista abre una ejecucion.
 5. El sistema muestra el identificador devuelto por WhatsApp y el codigo o detalle de error cuando existan.
 
 ## Flujo alternativo
 
-- Si no existen intentos, el sistema muestra un estado vacio que no se confunde con un fallo.
+- Si no existen ejecuciones, el sistema muestra un estado vacio que no se confunde con un fallo.
 
 ## Excepciones (si aplica)
 
@@ -30,7 +30,7 @@ Permitir que el especialista compruebe si cada solicitud de recordatorio fue ace
 
 ## Postcondiciones
 
-- No se reenvia ningun mensaje ni se modifica el historial.
+- No se envia ningun mensaje ni se modifica el historial.
 
 ## Reglas del negocio relacionadas
 
