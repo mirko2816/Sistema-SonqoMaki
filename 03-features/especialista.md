@@ -47,10 +47,10 @@ Este archivo funciona como catálogo de capacidades orientado al valor del actor
 **Como** especialista, **quiero** activar o inactivar un paciente, **para** controlar su participación en futuros envíos sin perder su información.  
 **Detalle:** [CU-PAC-004](../02-casos-de-uso/pacientes/CU-PAC-004-cambiar-estado-paciente.md)
 
-### FE-ESP-PAC-005 - Eliminar un paciente
+### FE-ESP-PAC-005 - Archivar un paciente
 
-**Como** especialista, **quiero** eliminar definitivamente un paciente con confirmación previa, **para** retirar su información operativa cuando corresponda.  
-**Detalle:** [CU-PAC-005](../02-casos-de-uso/pacientes/CU-PAC-005-eliminar-paciente.md)
+**Como** especialista, **quiero** archivar un paciente con confirmación previa, **para** retirarlo de la operación habitual sin perder su configuración ni trazabilidad.
+**Detalle:** [CU-PAC-005](../02-casos-de-uso/pacientes/CU-PAC-005-archivar-paciente.md)
 
 ## Ejercicios
 
@@ -96,6 +96,11 @@ Este archivo funciona como catálogo de capacidades orientado al valor del actor
 **Como** especialista, **quiero** definir rutinas contiguas y personalizar sus ejercicios, **para** cubrir cada etapa del plan con indicaciones ordenadas.  
 **Detalle:** [CU-RUT-001](../02-casos-de-uso/rutinas/CU-RUT-001-configurar-rutinas.md)
 
+### FE-ESP-RUT-002 - Gestionar la biblioteca de rutinas
+
+**Como** especialista, **quiero** crear y mantener plantillas de rutina reutilizables, **para** configurar planes con menos trabajo repetitivo sin vincular sus copias.
+**Detalle:** [CU-RUT-002](../02-casos-de-uso/rutinas/CU-RUT-002-gestionar-biblioteca-rutinas.md)
+
 ## Recordatorios y envíos
 
 ### FE-ESP-REC-001 - Configurar recordatorios
@@ -110,7 +115,7 @@ Este archivo funciona como catálogo de capacidades orientado al valor del actor
 
 ### FE-ESP-ENV-001 - Consultar el historial técnico
 
-**Como** especialista, **quiero** revisar los intentos de envío y sus errores, **para** distinguir solicitudes aceptadas de fallos técnicos.  
+**Como** especialista, **quiero** revisar las ejecuciones de recordatorios, **para** distinguir omisiones, solicitudes aceptadas y fallos técnicos.
 **Detalle:** [CU-ENV-001](../02-casos-de-uso/envios/CU-ENV-001-consultar-historial-envios.md)
 
 ## Límites del actor

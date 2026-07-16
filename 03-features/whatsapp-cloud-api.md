@@ -13,9 +13,9 @@ WhatsApp Cloud API es un servicio externo, no un usuario del producto. Estas fea
 **Para** entregar el recordatorio por el canal configurado, **el sistema necesita** enviar a WhatsApp una plantilla aprobada con el destinatario y el enlace seguro del plan.  
 **Detalle:** [CU-REC-002](../02-casos-de-uso/recordatorios/CU-REC-002-ejecutar-envio-programado.md)
 
-### FE-WPP-ENV-002 - Recibir el resultado técnico
+### FE-WPP-ENV-002 - Recibir el resultado inmediato
 
-**Para** conservar evidencia del intento, **el sistema necesita** recibir y registrar el identificador externo cuando exista y distinguir una solicitud aceptada de una fallida.  
+**Para** conservar evidencia de la solicitud, **el sistema necesita** recibir y registrar el identificador externo cuando exista y distinguir una solicitud aceptada de una fallida.
 **Detalle:** registro técnico en [CU-REC-002](../02-casos-de-uso/recordatorios/CU-REC-002-ejecutar-envio-programado.md)
 
 ### FE-WPP-ENV-003 - Conservar información del fallo
@@ -25,4 +25,4 @@ WhatsApp Cloud API es un servicio externo, no un usuario del producto. Estas fea
 
 ## Límites del actor
 
-En el MVP, una aceptación técnica no demuestra entrega, lectura ni cumplimiento. No se procesan respuestas del paciente, estados detallados posteriores ni reintentos automáticos.
+En el MVP, una aceptación técnica no demuestra entrega, lectura ni cumplimiento. No se reciben webhooks ni se procesan respuestas del paciente, estados posteriores o reintentos automáticos.
