@@ -1,73 +1,41 @@
-# Sistema-SonqoMaki
+# Sistema Sonqo Maki
 
-## El proyecto
-
----
-
-Una aplicación interna para registrar pacientes, asignarles una rutina, compartirla mediante un enlace seguro y enviar recordatorios por WhatsApp. Puedes revisar la vision y caracteristicas principales generales del producto en [vision-del-producto.md](vision-del-producto.md)
+Aplicación web para registrar pacientes, preparar planes con rutinas, enviar recordatorios mediante WhatsApp y permitir que el paciente consulte la rutina vigente desde un enlace seguro.
 
 ## Estado
 
----
+La documentación del MVP está normalizada para iniciar la implementación. La primera validación se ejecutará localmente; el despliegue productivo queda fuera de esta fase.
 
-🚧 **Proyecto en desarrollo**, ahora estamos en una fase de depuración de casos de uso y alcance del sistema. Se esta priorizando una entraga del producto que empiece a resolver problemas, e ir incrementando caracteristicas mas adelante. Aun no hay código. 
+## Decisiones principales del MVP
 
-## Estructura esperada del proyecto
+- Un único tipo de usuario autenticado: especialista.
+- Laravel, Blade, Alpine.js, Tailwind CSS y PostgreSQL.
+- Monolito modular renderizado por el servidor.
+- Zona horaria fija `America/Lima`.
+- Hasta dos recordatorios diarios por plan.
+- WhatsApp Cloud API con resultado inmediato, sin webhooks ni reintentos automáticos.
+- Pacientes archivados mediante eliminación lógica.
+- Biblioteca de ejercicios y biblioteca de rutinas reutilizables.
+- Enlace público exclusivo del plan, generado durante su primera activación.
 
----
+## Documentación
 
+```text
+00-producto/
+01-requisitos/
+02-casos-de-uso/
+03-features/
+04-arquitectura/
+05-integraciones/
+06-trazabilidad/
 ```
-docs/
-├── 00-producto/
-│ ├── vision-del-producto.md
-│ ├── alcance-mvp.md
-│ ├── fuera-de-alcance.md
-│ └── glosario.md
-│
-├── 01-requisitos/
-│ ├── requisitos-funcionales.md
-│ ├── requisitos-no-funcionales.md
-│ └── reglas-de-negocio.md
-│
-├── 02-casos-de-uso/
-│ ├── autenticacion/
-│ │ └── CU-AUTH-001-iniciar-sesion.md
-│ ├── pacientes/
-│ │ ├── CU-PAC-001-registrar-paciente.md
-│ │ └── CU-PAC-002-editar-paciente.md
-│ ├── ejercicios/
-│ │ ├── CU-EJ-001-registrar-ejercicio.md
-│ │ └── CU-EJ-002-editar-ejercicio.md
-│ ├── planes/
-│ │ └── CU-PLAN-001-crear-plan.md
-│ ├── rutinas/
-│ │ └── CU-RUT-001-configurar-rutina.md
-│ ├── recordatorios/
-│ │ └── CU-REC-001-programar-recordatorios.md
-│ ├── pagina-publica/
-│ │ └── CU-WEB-001-visualizar-rutina.md
-│ └── whatsapp/
-│ └── CU-WA-001-enviar-recordatorio.md
-│
-├── 03-features/
-│ ├── especialista.md
-│ ├── paciente.md
-│ ├── reloj-del-sistema.md
-│ ├── whatsapp-cloud-api.md
-│
-├── 04-arquitectura/
-│ ├── arquitectura-general.md
-│ ├── modelo-de-datos.md
-│ ├── flujos-del-sistema.md
-│ └── adr/
-│ ├── ADR-001-stack-tecnologico.md
-│ ├── ADR-002-enlace-publico-por-plan.md
-│ ├── ADR-003-whatsapp-cloud-api.md
-│ └── ADR-004-unico-tipo-de-usuario.md
-│
-├── 05-integraciones/
-│ └── whatsapp-cloud-api.md
-│
-└── 06-trazabilidad/
- └── matriz-de-trazabilidad.md
-```
+
+## Orden de lectura
+
+1. [Visión del producto](00-producto/vision-del-producto.md)
+2. [Alcance del MVP](00-producto/alcance-mvp.md)
+3. [Reglas de negocio](01-requisitos/reglas-de-negocio.md)
+4. [Casos de uso](02-casos-de-uso/README.md)
+5. [Arquitectura general](04-arquitectura/arquitectura-general.md)
+6. [Modelo de datos](04-arquitectura/modelo-de-datos.md)
+7. [Matriz de trazabilidad](06-trazabilidad/matriz-de-trazabilidad.md)
