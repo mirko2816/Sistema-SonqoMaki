@@ -10,6 +10,8 @@
 
 **Plantilla de rutina:** rutina reutilizable de la biblioteca. Al incorporarla a un plan se crea una copia independiente y editable.
 
+**Plantilla archivada:** plantilla de rutina con estado `archived`. Deja de aparecer en el listado principal de la biblioteca y pasa a una sección separada de archivados. Las copias ya generadas en planes existentes no se ven afectadas. Puede restaurarse a estado activo.
+
 **Rutina:** conjunto ordenado de ejercicios que cubre un periodo dentro de un plan. Las rutinas de un mismo plan son contiguas y no se superponen.
 
 **Rutina vigente:** única rutina de un plan cuyas fechas incluyen el día actual en `America/Lima`.

@@ -21,9 +21,9 @@ Este catalogo conserva solo interacciones necesarias para completar, proteger o 
 |:-------------- |:------------------------------------------------------ |
 | Autenticacion  | Iniciar sesion; cerrar sesion                          |
 | Pacientes      | Registrar; consultar; editar; cambiar estado; archivar |
-| Ejercicios     | Crear; consultar y seleccionar; editar                 |
+| Ejercicios     | Crear; consultar y seleccionar; editar; eliminar       |
 | Planes         | Crear; editar; duplicar; cambiar estado                |
-| Rutinas        | Configurar rutinas y sus ejercicios; gestionar biblioteca |
+| Rutinas        | Configurar rutinas y sus ejercicios; gestionar biblioteca; archivar plantilla |
 | Pagina publica | Consultar rutina vigente                               |
 | Recordatorios  | Configurar; ejecutar envio programado                  |
 | Recordatorios  | Consultar historial tecnico                            |

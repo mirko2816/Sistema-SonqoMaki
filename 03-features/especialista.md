@@ -69,6 +69,11 @@ Este archivo funciona como catálogo de capacidades orientado al valor del actor
 **Como** especialista, **quiero** actualizar un ejercicio de la biblioteca, **para** corregir o mejorar su información base sin alterar las copias ya configuradas.  
 **Detalle:** [CU-EJE-003](../02-casos-de-uso/ejercicios/CU-EJE-003-editar-ejercicio.md)
 
+### FE-ESP-EJE-004 - Eliminar un ejercicio de la biblioteca
+
+**Como** especialista, **quiero** eliminar un ejercicio de la biblioteca cuando ya no sea relevante, **para** mantener la lista ordenada sin afectar las rutinas existentes.  
+**Detalle:** [CU-EJE-004](../02-casos-de-uso/ejercicios/CU-EJE-004-eliminar-ejercicio.md)
+
 ## Planes y rutinas
 
 ### FE-ESP-PLA-001 - Crear un plan
@@ -83,7 +88,7 @@ Este archivo funciona como catálogo de capacidades orientado al valor del actor
 
 ### FE-ESP-PLA-003 - Duplicar un plan
 
-**Como** especialista, **quiero** copiar un plan para otro paciente, **para** reutilizar su estructura como una configuración independiente.  
+**Como** especialista, **quiero** copiar un plan para cualquier paciente (incluido el mismo), **para** reutilizar su estructura como una configuración independiente.  
 **Detalle:** [CU-PLA-003](../02-casos-de-uso/planes/CU-PLA-003-duplicar-plan.md)
 
 ### FE-ESP-PLA-004 - Controlar el estado de un plan
@@ -100,6 +105,11 @@ Este archivo funciona como catálogo de capacidades orientado al valor del actor
 
 **Como** especialista, **quiero** crear y mantener plantillas de rutina reutilizables, **para** configurar planes con menos trabajo repetitivo sin vincular sus copias.
 **Detalle:** [CU-RUT-002](../02-casos-de-uso/rutinas/CU-RUT-002-gestionar-biblioteca-rutinas.md)
+
+### FE-ESP-RUT-003 - Archivar una plantilla de rutina
+
+**Como** especialista, **quiero** archivar una plantilla de rutina que ya no utilizo, **para** mantener la biblioteca organizada sin eliminar el historial de copias existentes.  
+**Detalle:** [CU-RUT-003](../02-casos-de-uso/rutinas/CU-RUT-003-archivar-plantilla-rutina.md)
 
 ## Recordatorios y envíos
 

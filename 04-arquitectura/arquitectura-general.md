@@ -29,6 +29,7 @@ El MVP se ejecutará en la computadora del desarrollador y se expondrá mediante
 | Zona horaria de negocio   | `America/Lima`                                                                        |
 | Mensajería                | WhatsApp Cloud API con envíos reales y resultado inmediato; sin webhooks                |
 | Recordatorios             | Tarea programada activa únicamente mientras la aplicación esté en ejecución           |
+| Finalización de planes    | Tarea programada diaria que actualiza `status → finished` para planes con `ends_on` vencido |
 | Eliminación               | Archivo lógico de pacientes y datos funcionales recuperables                             |
 | Historial de recordatorios  | Se conservan ejecuciones omitidas, aceptadas y fallidas                                  |
 | Enlaces públicos          | Token exclusivo del plan, generado automáticamente en su primera activación           |
@@ -154,6 +155,12 @@ sequenceDiagram
 La combinación de plan, fecha y horario debe ser única para impedir mensajes duplicados, incluso si la tarea se ejecuta más de una vez. El derecho a procesar esa combinación debe obtenerse de forma atómica en PostgreSQL.
 
 No habrá reintentos automáticos en el MVP. Cada envío fallido u omitido debe conservar un motivo suficientemente preciso para diagnóstico.
+
+### 8.4 Finalización automática de planes por fecha
+
+Una tarea programada diaria revisará todos los planes con `status = 'active'` o `status = 'paused'` cuya `ends_on` sea estrictamente anterior a la fecha actual en `America/Lima` y actualizará `status → 'finished'` de forma persistente.
+
+Esta tarea garantiza que el dashboard, el historial y las consultas del especialista reflejen siempre el estado real del plan. La lógica de envío de recordatorios aplica la misma regla de forma defensiva: si la fecha supera `ends_on`, el plan se trata como finalizado aunque el scheduler aún no haya ejecutado la actualización.
 
 ## 9. Persistencia y manejo de datos
 

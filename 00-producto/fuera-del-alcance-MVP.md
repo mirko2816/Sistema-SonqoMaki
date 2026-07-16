@@ -12,7 +12,7 @@ Las siguientes capacidades se aplazan deliberadamente:
 - alertas clínicas o técnicas y su gestión;
 - paneles, métricas, gráficas, reportes y exportaciones;
 - historias clínicas, evoluciones, citas o teleconsultas;
-- reintentos automáticos complejos;
+- reintentos automáticos;
 - seguimiento detallado de estados entregado y leído;
 - recepción y almacenamiento de webhooks de WhatsApp;
 - panel de auditoría y configuración de WhatsApp desde la interfaz;

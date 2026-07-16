@@ -52,7 +52,6 @@ erDiagram
     REMINDER_SCHEDULES o|--o{ REMINDER_EXECUTIONS : "dispara"
     ROUTINES o|--o{ REMINDER_EXECUTIONS : "resuelve"
     PUBLIC_LINKS o|--o{ REMINDER_EXECUTIONS : "utiliza"
-
 ```
 
 La relación entre ejercicios de biblioteca y ejercicios configurados es opcional desde la copia hacia el origen. La copia conserva todos los valores necesarios y continúa siendo válida aunque el ejercicio original se elimine lógicamente.
@@ -100,18 +99,18 @@ Almacena las sesiones tradicionales cuando Laravel use el controlador de sesione
 
 Representa al paciente sin cuenta que recibe recordatorios y posee planes.
 
-| Columna                 | Tipo           | Nulable | Reglas                                           |
-| ----------------------- | -------------- | ------- | ------------------------------------------------ |
-| `id`                    | `bigint`       | No      | Clave primaria                                   |
-| `first_names`           | `varchar(120)` | No      | Texto no vacío                                   |
-| `last_names`            | `varchar(120)` | No      | Texto no vacío                                   |
+| Columna                 | Tipo           | Nulable | Reglas                                               |
+| ----------------------- | -------------- | ------- | ---------------------------------------------------- |
+| `id`                    | `bigint`       | No      | Clave primaria                                       |
+| `first_names`           | `varchar(120)` | No      | Texto no vacío                                       |
+| `last_names`            | `varchar(120)` | No      | Texto no vacío                                       |
 | `dni`                   | `varchar(8)`   | Sí      | Ocho dígitos cuando exista; conserva ceros iniciales |
-| `whatsapp_phone`        | `varchar(12)`  | No      | Formato canónico `+51` más nueve dígitos         |
-| `status`                | `varchar(20)`  | No      | `active` o `inactive`; inicial `active`          |
-| `whatsapp_consented_on` | `date`         | Sí      | Evidencia básica de consentimiento               |
-| `created_at`            | `timestamptz`  | No      | Auditoría técnica                                |
-| `updated_at`            | `timestamptz`  | No      | También se usa para detectar edición concurrente |
-| `deleted_at`            | `timestamptz`  | Sí      | Eliminación lógica                               |
+| `whatsapp_phone`        | `varchar(12)`  | No      | Formato canónico `+51` más nueve dígitos             |
+| `status`                | `varchar(20)`  | No      | `active` o `inactive`; inicial `active`              |
+| `whatsapp_consented_on` | `date`         | Sí      | Evidencia básica de consentimiento                   |
+| `created_at`            | `timestamptz`  | No      | Auditoría técnica                                    |
+| `updated_at`            | `timestamptz`  | No      | También se usa para detectar edición concurrente     |
+| `deleted_at`            | `timestamptz`  | Sí      | Eliminación lógica                                   |
 
 Restricciones e índices:
 
@@ -152,11 +151,19 @@ Biblioteca de rutinas reutilizables, independiente de pacientes y planes. No con
 | ------------ | -------------- | ------- | ------------------ |
 | `id`         | `bigint`       | No      | Clave primaria     |
 | `name`       | `varchar(160)` | No      | Texto no vacío     |
+| `status`     | `varchar(20)`  | No      | `active` o `archived`; inicial `active` |
 | `created_at` | `timestamptz`  | No      | Auditoría técnica  |
 | `updated_at` | `timestamptz`  | No      | Control de cambios |
 | `deleted_at` | `timestamptz`  | Sí      | Eliminación lógica |
 
+Restricciones e índices:
+
+- `CHECK (status IN ('active', 'archived'))`.
+- Índice sobre `status` y `name` para filtrado rápido en la biblioteca.
+
 Usar una plantilla crea nuevas filas en `routines` y `routine_exercises`; la rutina del plan no conserva una dependencia operativa con la plantilla.
+
+Una plantilla archivada (`status = 'archived'`) deja de aparecer en el listado principal de la biblioteca y pasa a una sección separada de archivados. Las copias ya generadas a partir de ella en planes existentes no se ven afectadas. Una plantilla archivada puede restaurarse a `active` si el especialista lo requiere.
 
 ### 5.6 `routine_template_exercises`
 
@@ -359,7 +366,7 @@ Es el historial persistente de cada combinación programada procesada. También 
 | `provider_error_detail`    | `text`         | Sí      | Detalle sanitizado, sin credenciales           |
 | `duration_ms`              | `integer`      | Sí      | Duración total no negativa                     |
 | `created_at`               | `timestamptz`  | No      | Auditoría técnica                              |
-| `updated_at`               | `timestamptz`  | No      | Actualización del resultado                     |
+| `updated_at`               | `timestamptz`  | No      | Actualización del resultado                    |
 
 Restricciones e índices:
 

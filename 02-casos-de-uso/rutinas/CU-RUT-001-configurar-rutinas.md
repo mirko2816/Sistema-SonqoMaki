@@ -19,7 +19,10 @@ Definir la cobertura temporal del plan mediante rutinas contiguas y configurar l
 1. El especialista abre la configuracion de rutinas del plan.
 2. El sistema muestra el rango inclusivo del plan y las rutinas existentes en orden cronologico.
 3. El especialista crea o edita una rutina indicando nombre, fecha inicial y fecha final.
-4. El sistema valida que la rutina este dentro del plan y no se superponga con otra.
+
+   > **Nota:** el nombre de la rutina es visible para el paciente en la página pública. La interfaz debe mostrarlo claramente para que el especialista elija un nombre comprensible (por ejemplo: "Semana 1 — Movilidad de hombro") en lugar de un nombre de uso interno.
+
+4. El sistema valida que la rutina esté dentro del plan y no se superponga con otra.
 5. El especialista selecciona uno o mas ejercicios de la biblioteca.
 6. El sistema copia cada seleccion a la rutina.
 7. El especialista ordena los ejercicios y ajusta sets, repeticiones, duracion o URL para esa rutina.

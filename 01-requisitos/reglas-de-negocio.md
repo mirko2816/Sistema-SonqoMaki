@@ -93,6 +93,8 @@ Un recordatorio solo puede enviarse cuando, en el momento programado:
 
 Si alguna condicion no se cumple, el sistema no debe intentar el envio.
 
+El scheduler solo procesa horarios cuyo instante programado sea presente o futuro en el momento de evaluacion. Los horarios cuyo instante ya haya pasado en el dia de activacion del plan nunca se evalúan ni generan una fila en el historial de ejecuciones.
+
 ### RN-REC-003 Un solo envio por ejecucion programada
 
 Cada combinacion de plan, fecha y horario programado debe producir como maximo un intento de envio, incluso si el proceso de programacion se ejecuta mas de una vez.
@@ -104,6 +106,10 @@ Cada combinacion de plan, fecha y horario programado debe producir como maximo u
 El servidor genera automaticamente el primer enlace publico al activar el plan por primera vez. El enlace pertenece exclusivamente a ese plan y no puede reasignarse ni reutilizarse para identificar otro.
 
 El enlace no vence automaticamente. Solo una operacion tecnica autorizada puede revocarlo o rotarlo por seguridad; una rotacion revoca el anterior y genera uno nuevo para el mismo plan.
+
+Pausar un plan **no revoca** su enlace publico. Mientras el plan este en pausa, el enlace sigue siendo valido tecnicamente pero muestra la pagina estatica de plan pausado. Al reactivar el plan, el mismo enlace vuelve a resolver la rutina vigente sin necesidad de generar uno nuevo.
+
+El enlace si se revoca cuando el paciente es archivado. En ese caso, una reactivacion posterior del paciente requiere generar un nuevo enlace antes de volver a enviar recordatorios.
 
 ### RN-PUB-001 Resolucion actual de enlaces publicos
 

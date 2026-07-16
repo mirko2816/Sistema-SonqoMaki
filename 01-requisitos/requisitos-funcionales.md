@@ -72,7 +72,9 @@ El sistema debe validar que el telefono tenga formato peruano `+51`, que el tele
 
 ### RF-PAC-003 Listado de pacientes
 
-El sistema debe mostrar un listado de pacientes para que el especialista pueda encontrarlos y acceder a su detalle.
+El sistema debe mostrar un listado de pacientes activos e inactivos para que el especialista pueda encontrarlos y acceder a su detalle.
+
+Los pacientes archivados (eliminación lógica) no aparecen en esta lista principal. El especialista puede acceder a ellos mediante una sección separada de pacientes archivados.
 
 ### RF-PAC-004 Detalle de paciente
 
@@ -150,6 +152,18 @@ El sistema debe mantener una biblioteca de ejercicios independiente de los pacie
 
 Los ejercicios guardados en esta biblioteca deben poder seleccionarse al configurar rutinas y no deben modificarse cuando se archive un paciente.
 
+### RF-EJE-007 Eliminar ejercicio de la biblioteca
+
+El sistema debe permitir al especialista eliminar un ejercicio de la biblioteca mediante eliminación lógica.
+
+Cuando se elimine un ejercicio:
+
+- desaparece del listado de la biblioteca y no puede seleccionarse para nuevas rutinas;
+- las copias ya configuradas dentro de rutinas de planes existentes (`routine_exercises`) no se modifican ni eliminan, porque son copias independientes;
+- la referencia `source_exercise_id` de esas copias queda nula si el ejercicio se purga físicamente en el futuro, pero no afecta su funcionamiento operativo.
+
+El sistema debe pedir confirmación explícita antes de eliminar, indicando que el ejercicio dejará de estar disponible para nuevas rutinas.
+
 ## 6. Planes de ejercicios
 
 ### RF-PLA-001 Crear plan
@@ -186,15 +200,17 @@ Cada plan debe gestionar sus propias rutinas, recordatorios y enlace publico.
 
 Cuando el plan llegue a su fecha de fin, el sistema debe dejar de enviar recordatorios asociados a ese plan.
 
-El cambio automatico de estado a finalizado puede implementarse como parte de la logica de ejecucion o como una tarea programada.
+Una tarea programada diaria debe actualizar de forma persistente el campo `status` de `active` a `finished` para todo plan cuya `ends_on` sea anterior a la fecha actual en `America/Lima`. Esto garantiza que el dashboard y el historial reflejen siempre el estado real sin depender de cálculos en tiempo de ejecución.
+
+Además, la lógica de envío de recordatorios trata como finalizado cualquier plan cuya fecha actual supere `ends_on`, aunque el scheduler aún no haya actualizado el campo persistido.
 
 Un plan finalizado no debe poder reactivarse ni volver a pausa. Para reutilizarlo debe duplicarse como un plan nuevo.
 
-### RF-PLA-006 Duplicacion de plan desde otro paciente
+### RF-PLA-006 Duplicacion de plan
 
-El sistema debe permitir duplicar un plan de ejercicios existente de otro paciente para asignarlo a un nuevo paciente.
+El sistema debe permitir duplicar un plan de ejercicios existente y asignarlo a cualquier paciente, incluido el mismo paciente del plan original.
 
-Al duplicar el plan, el sistema debe crear una copia editable del plan, sus rutinas y la configuracion de ejercicios, sin vincular la nueva copia al paciente original.
+Al duplicar el plan, el sistema debe crear una copia editable del plan, sus rutinas y la configuracion de ejercicios, sin vincular la nueva copia al plan de origen.
 
 El especialista debe poder ajustar fechas, rutinas, ejercicios, recordatorios y estado del nuevo plan antes de usarlo.
 
@@ -254,6 +270,17 @@ Al usar una rutina de biblioteca en un plan, el sistema debe crear una copia edi
 
 Las rutinas guardadas en la biblioteca no deben modificarse cuando se archive un paciente.
 
+**Archivado de plantillas de rutina:**
+
+El especialista puede archivar una plantilla de rutina. Al hacerlo:
+
+- la plantilla cambia su estado a `archived`;
+- deja de aparecer en el listado principal de la biblioteca y no puede seleccionarse para nuevos planes;
+- pasa a una sección separada de archivados, accesible desde la biblioteca;
+- las copias ya generadas en planes de pacientes no se modifican ni eliminan;
+- el especialista puede restaurar la plantilla a estado `active` desde la sección de archivados si lo necesita.
+
+
 ## 8. Pagina publica de rutina
 
 ### RF-PUB-001 Enlace seguro
@@ -278,6 +305,8 @@ La pagina publica debe mostrar solo la informacion necesaria para realizar la ru
 - enlaces externos de material cuando existan.
 
 No debe mostrar informacion personal sensible del paciente.
+
+> **Nota UX:** El nombre de la rutina definido por el especialista es visible directamente para el paciente en esta página. La interfaz de configuración debe dejar claro que ese campo es público, para que el especialista elija nombres comprensibles para el paciente (por ejemplo: "Semana 1 — Movilidad de hombro") y no nombres de uso interno.
 
 ### RF-PUB-004 Restriccion de rutinas pasadas y futuras
 
@@ -427,10 +456,13 @@ El sistema debe incluir como minimo las siguientes pantallas:
 
 ### RF-UI-002 Dashboard simple
 
-El dashboard debe mostrar como minimo:
+El dashboard debe mostrar una fila por plan activo. Si un paciente tiene varios planes activos simultáneos, cada plan ocupa una fila independiente.
+
+Cada fila debe mostrar como mínimo:
 
 - nombre del paciente;
-- telefono;
+- teléfono;
+- nombre del plan;
 - estado del plan;
 - estado de recordatorios.
 
