@@ -1,6 +1,6 @@
 # Alcance del MVP - Sonqo Maki
 
-> Estado: definicion inicial  
+> Estado: aprobado para implementacion
 > Fecha: 13 de julio de 2026  
 > Relacionado con: [vision-del-producto.md](vision-del-producto.md)
 
@@ -45,14 +45,14 @@ No incluye registro publico de usuarios, gestion de cuentas desde la interfaz ni
 
 ### 4.2. Pacientes
 
-El sistema permitira registrar, editar, listar y eliminar pacientes.
+El sistema permitira registrar, editar, listar y archivar pacientes mediante eliminacion logica.
 
 Datos incluidos del paciente:
 
 - nombres;
 - apellidos;
 - telefono con formato peruano `+51`;
-- DNI;
+- DNI, opcional;
 - fecha de consentimiento para recibir mensajes.
 
 El paciente podra estar en estado activo o inactivo.
@@ -72,7 +72,11 @@ Datos incluidos del ejercicio:
 
 La URL de material podra apuntar a video, imagen u otro recurso externo. El MVP no almacenara videos, imagenes ni archivos propios en la base de datos.
 
+YouTube sera el caso habitual, pero no el unico proveedor admitido.
+
 Un ejercicio podra reutilizarse en varias rutinas. Dentro de cada rutina, los ejercicios deberan poder ordenarse manualmente.
+
+El sistema incluira una biblioteca de rutinas reutilizables. Al usar una rutina de biblioteca en un plan, se creara una copia editable e independiente con sus ejercicios; los cambios posteriores no modificaran la plantilla original.
 
 ### 4.4. Planes de ejercicios
 
@@ -118,7 +122,9 @@ Por cada ejercicio agregado a una rutina, el especialista podra configurar:
 
 ### 4.6. Pagina publica de rutina
 
-El enlace publico del paciente sera generado y gestionado automaticamente por el sistema. El especialista no administrara manualmente los enlaces.
+El enlace publico sera generado automaticamente por el servidor cuando el plan se active por primera vez. Cada enlace pertenecera exclusivamente a un plan y nunca podra reutilizarse para identificar otro.
+
+El especialista no administrara enlaces desde la interfaz. Solo una operacion tecnica autorizada podra revocarlos o rotarlos por seguridad.
 
 Cuando el plan este activo, el enlace mostrara solo la rutina vigente del dia.
 
@@ -153,7 +159,7 @@ Durante el MVP no existe aun una plantilla aprobada. El texto base esperado del 
 Hola {nombre}. Tu salud es importante. recuerda realizar tu rutina de hoy: {enlace}.
 ```
 
-El sistema registrara por cada intento si WhatsApp acepto o fallo el envio.
+El sistema registrara cada ejecucion programada como omitida, aceptada o fallida. Los estados posteriores de entrega o lectura y la recepcion de webhooks quedan fuera del MVP.
 
 No se incluyen reintentos automaticos. Si un envio falla, el sistema solo registrara el fallo.
 
@@ -166,6 +172,7 @@ El MVP incluira las siguientes pantallas:
 - pacientes;
 - detalle de paciente;
 - biblioteca de ejercicios;
+- biblioteca de rutinas;
 - crear y editar plan;
 - configurar rutinas;
 - configurar recordatorios;
@@ -182,9 +189,9 @@ El dashboard mostrara como minimo:
 ## 5. Restricciones del MVP
 
 - La aplicacion sera web responsive.
-- La primera ejecucion sera local.
+- La primera ejecucion sera local y permitira comprobar recordatorios reales mientras la aplicacion, el programador de tareas y la conexion a Internet permanezcan activos.
 - El despliegue en servidor contratado se realizara en una fase posterior.
-- El stack tecnologico se definira despues de cerrar la documentacion de producto, requisitos y casos de uso.
+- El stack aprobado es Laravel, Blade, Alpine.js para interacciones puntuales, Tailwind CSS y PostgreSQL.
 - El MVP debe operar inicialmente con aproximadamente 10 a 20 pacientes.
 - El sistema no debe generar spam de mensajes.
 - Los enlaces enviados no deben dirigir a paginas vacias o sin estado claro.
@@ -206,7 +213,7 @@ Quedan fuera del MVP:
 - seguimiento de adherencia, dolor o cumplimiento;
 - historias clinicas, citas o teleconsultas;
 - despliegue productivo en servidor contratado;
-- definicion final del stack tecnologico.
+- recepcion de webhooks y seguimiento posterior de estados entregado o leido.
 
 ## 7. Criterio de finalizacion del MVP
 
