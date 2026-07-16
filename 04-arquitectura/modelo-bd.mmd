@@ -1,0 +1,21 @@
+erDiagram
+    USERS ||--o{ SESSIONS : "inicia"
+    PATIENTS ||--o{ PLANS : "tiene"
+    PLANS ||--o{ ROUTINES : "contiene"
+    ROUTINES ||--o{ ROUTINE_EXERCISES : "incluye"
+    EXERCISES o|--o{ ROUTINE_EXERCISES : "origina"
+
+    ROUTINE_TEMPLATES ||--o{ ROUTINE_TEMPLATE_EXERCISES : "incluye"
+    EXERCISES o|--o{ ROUTINE_TEMPLATE_EXERCISES : "origina"
+
+    PLANS ||--|| REMINDER_CONFIGURATIONS : "configura"
+    REMINDER_CONFIGURATIONS ||--o{ REMINDER_SCHEDULES : "programa"
+    PLANS ||--o{ PUBLIC_LINKS : "posee"
+
+    PLANS ||--o{ REMINDER_EXECUTIONS : "genera"
+    PATIENTS ||--o{ REMINDER_EXECUTIONS : "recibe"
+    REMINDER_SCHEDULES o|--o{ REMINDER_EXECUTIONS : "dispara"
+    ROUTINES o|--o{ REMINDER_EXECUTIONS : "resuelve"
+    PUBLIC_LINKS o|--o{ REMINDER_EXECUTIONS : "utiliza"
+
+    REMINDER_EXECUTIONS o|--o{ WHATSAPP_WEBHOOK_EVENTS : "actualiza"
