@@ -1,5 +1,17 @@
-# Glosario de terminos
+# Glosario de términos
 
-**Plan de ejercicios**: Es un contenedor definido con fechas en las que se almacenan 1 o mas rutinas.
+**Ejecución de recordatorio:** evaluación de un horario programado. Puede terminar como omitida, aceptada o fallida.
 
-**Rutina**: Es un conjunto de ejercicios que pertenecen a un plan de ejercicios, son contiguas en el tiempo, y no exceden el limite de tiempo establecido por el plan de ejercicios
+**Enlace público:** URL segura y no predecible asociada exclusivamente a un plan. Se genera al activar el plan por primera vez.
+
+**Especialista:** único usuario autenticado del MVP.
+
+**Plan de ejercicios:** contenedor asociado a un paciente, definido por un rango inclusivo de fechas y compuesto por una o más rutinas.
+
+**Plantilla de rutina:** rutina reutilizable de la biblioteca. Al incorporarla a un plan se crea una copia independiente y editable.
+
+**Rutina:** conjunto ordenado de ejercicios que cubre un periodo dentro de un plan. Las rutinas de un mismo plan son contiguas y no se superponen.
+
+**Rutina vigente:** única rutina de un plan cuyas fechas incluyen el día actual en `America/Lima`.
+
+**Solicitud aceptada:** respuesta inmediata de WhatsApp que confirma la aceptación técnica de la solicitud; no demuestra entrega, lectura ni cumplimiento.

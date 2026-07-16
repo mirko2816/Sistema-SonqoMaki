@@ -12,7 +12,7 @@ Cada paciente debe tener un unico numero de telefono WhatsApp y un mismo numero 
 
 La unicidad debe comprobarse usando el numero normalizado con el codigo de pais `+51`, sin espacios, guiones, parentesis ni otras diferencias de formato.
 
-La regla aplica tanto a pacientes activos como inactivos. Si un paciente es eliminado definitivamente, su numero puede utilizarse en un nuevo registro.
+La regla aplica a pacientes activos, inactivos y archivados. El numero y el DNI, cuando exista, permanecen reservados mientras el paciente sea recuperable y solo pueden liberarse mediante una futura purga fisica autorizada.
 
 El sistema debe impedir la creacion o edicion de un paciente cuando el telefono normalizado ya pertenezca a otro paciente.
 
@@ -39,6 +39,10 @@ Un paciente puede tener dos o mas planes activos cuyos rangos de fechas se super
 Cada plan puede atender una condicion o zona corporal diferente y mantiene sus propias rutinas. En una misma fecha, el paciente puede tener una rutina vigente por cada plan activo y debe poder consultar y realizar todas las que correspondan.
 
 La superposicion entre planes no constituye un error y no debe impedir su activacion ni el envio de sus respectivos recordatorios.
+
+### RN-PLA-003 Finalizacion irreversible
+
+El estado `finalizado` es terminal. Un plan finalizado no puede reactivarse ni volver a pausa. Si su estructura debe reutilizarse, el especialista debe duplicarlo y configurar un plan nuevo.
 
 ## 3. Rutinas
 
@@ -95,6 +99,12 @@ Cada combinacion de plan, fecha y horario programado debe producir como maximo u
 
 ## 5. Pagina publica
 
+### RN-PUB-000 Generacion y pertenencia del enlace
+
+El servidor genera automaticamente el primer enlace publico al activar el plan por primera vez. El enlace pertenece exclusivamente a ese plan y no puede reasignarse ni reutilizarse para identificar otro.
+
+El enlace no vence automaticamente. Solo una operacion tecnica autorizada puede revocarlo o rotarlo por seguridad; una rotacion revoca el anterior y genera uno nuevo para el mismo plan.
+
 ### RN-PUB-001 Resolucion actual de enlaces publicos
 
 El enlace publico identifica de forma segura a un plan y no fija una rutina concreta. Por ello, un enlace enviado anteriormente debe resolverse nuevamente cada vez que se abre, usando el estado actual del plan y la fecha calendario de `America/Lima`.
@@ -113,7 +123,7 @@ La resolucion no debe cambiar el plan, reactivar recordatorios ni permitir el ac
 
 - El limite de dos recordatorios se controla por plan, aunque un paciente tenga varios planes.
 - Un paciente puede tener varios planes activos y rutinas vigentes el mismo dia.
-- Un telefono queda disponible para otro paciente despues de eliminar definitivamente al paciente que lo tenia asignado.
-- Las fechas se manejan por dia calendario en la zona horaria de la clinica, inicialmente `America/Lima`.
+- El DNI y el telefono permanecen reservados mientras el paciente archivado sea recuperable.
+- Las fechas y horarios se manejan en la zona horaria fija `America/Lima`; no existe configuracion desde la interfaz.
 - Las reglas de rango, no superposicion y continuidad deben validarse nuevamente cuando cambien las fechas de un plan o de cualquiera de sus rutinas.
 - Los enlaces publicos antiguos conservan su utilidad porque apuntan al plan, pero siempre muestran el resultado que corresponde al momento de la consulta.
