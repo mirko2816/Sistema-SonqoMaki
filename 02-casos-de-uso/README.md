@@ -20,20 +20,20 @@ Este catalogo conserva solo interacciones necesarias para completar, proteger o 
 | Modulo         | Casos de uso                                           |
 |:-------------- |:------------------------------------------------------ |
 | Autenticacion  | Iniciar sesion; cerrar sesion                          |
-| Pacientes      | Registrar; consultar; editar; cambiar estado; eliminar |
+| Pacientes      | Registrar; consultar; editar; cambiar estado; archivar |
 | Ejercicios     | Crear; consultar y seleccionar; editar                 |
 | Planes         | Crear; editar; duplicar; cambiar estado                |
-| Rutinas        | Configurar rutinas y sus ejercicios                    |
+| Rutinas        | Configurar rutinas y sus ejercicios; gestionar biblioteca |
 | Pagina publica | Consultar rutina vigente                               |
 | Recordatorios  | Configurar; ejecutar envio programado                  |
-| Envios         | Consultar historial tecnico                            |
+| Recordatorios  | Consultar historial tecnico                            |
 | Dashboard      | Consultar resumen operativo                            |
 
 ## Convenciones para implementacion
 
-- Las fechas se interpretan como dias calendario inclusivos en `America/Lima`.
+- Las fechas y horarios se interpretan en la zona horaria fija `America/Lima`.
 - Todo plan nuevo o duplicado se guarda inicialmente `en pausa`; solo pasa a `activo` despues de validar su configuracion completa. Esto evita introducir un cuarto estado `borrador` no definido para el MVP.
 - Las validaciones fallidas no producen cambios parciales.
-- "Eliminar" significa eliminacion definitiva cuando el caso lo indica.
+- "Archivar" significa eliminacion logica. La restauracion y la purga fisica son operaciones tecnicas fuera de la interfaz del MVP.
 - "Aceptado" por WhatsApp es un resultado tecnico; no demuestra entrega, lectura ni cumplimiento.
 - Los identificadores internos nunca se exponen como tokens publicos predecibles.
