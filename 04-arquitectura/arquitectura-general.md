@@ -47,7 +47,7 @@ El MVP utilizará el siguiente stack:
 - **Autenticación:** autenticación basada en sesión y cookies seguras.
 - **Tareas programadas:** scheduler de Laravel, ejecutado como proceso de trabajo durante el desarrollo y mediante cron o un servicio equivalente en el VPS.
 - **Integración externa:** cliente HTTP de Laravel para WhatsApp Cloud API.
-- **Pruebas:** PHPUnit o Pest, eligiendo uno al iniciar el proyecto y manteniéndolo de forma consistente.
+- **Pruebas:** Pest, eligiendo uno al iniciar el proyecto y manteniéndolo de forma consistente.
 - **Servidor local:** servidor de desarrollo de Laravel.
 - **Servidor en VPS:** Nginx, PHP-FPM, PostgreSQL y un proceso supervisado para las tareas programadas.
 
@@ -283,7 +283,6 @@ Las siguientes decisiones no bloquean la arquitectura general, pero deberán res
 - configuración definitiva de WhatsApp Cloud API;
 - período de retención y rotación de logs;
 - mecanismo técnico para crear y restaurar especialistas, pacientes o planes sin pantalla administrativa;
-- definición detallada del modelo de datos;
 - estrategia de copias de seguridad de PostgreSQL para el entorno expuesto y el VPS.
 
 ## 15. Criterios para evolucionar la arquitectura
