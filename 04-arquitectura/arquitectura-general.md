@@ -12,7 +12,7 @@ Sonqo Maki es una aplicación web para especialistas que permite gestionar pacie
 
 Los especialistas acceden mediante una cuenta creada manualmente. Los pacientes no tienen cuenta: consultan su rutina vigente mediante un enlace público seguro asociado a su plan.
 
-El MVP será ejecutado inicialmente por el desarrollador en su propia computadora y se expondrá a Internet mediante un túnel seguro. Posteriormente, la misma aplicación se desplegará en un servidor privado virtual (VPS).
+El MVP se ejecutará en la computadora del desarrollador y se expondrá mediante un túnel HTTPS cuando sea necesario abrir enlaces desde otros dispositivos o enviar recordatorios reales. El despliegue productivo se realizará después de validar y comercializar el producto.
 
 ## 3. Decisiones arquitectónicas
 
@@ -27,15 +27,15 @@ El MVP será ejecutado inicialmente por el desarrollador en su propia computador
 | Ejecución inicial         | Máquina del desarrollador expuesta mediante un túnel HTTPS                            |
 | Despliegue posterior      | VPS, proveedor pendiente de definir                                                   |
 | Zona horaria de negocio   | `America/Lima`                                                                        |
-| Mensajería                | WhatsApp Cloud API con envíos reales y recepción de webhooks                          |
+| Mensajería                | WhatsApp Cloud API con envíos reales y resultado inmediato; sin webhooks                |
 | Recordatorios             | Tarea programada activa únicamente mientras la aplicación esté en ejecución           |
-| Eliminación               | Eliminación lógica de información funcional                                           |
-| Auditoría de mensajes     | Los registros de envío se conservan y no se anonimizan                                |
-| Enlaces públicos          | Token no predecible asociado al plan, vigente mientras corresponda al estado del plan |
+| Eliminación               | Archivo lógico de pacientes y datos funcionales recuperables                             |
+| Historial de recordatorios  | Se conservan ejecuciones omitidas, aceptadas y fallidas                                  |
+| Enlaces públicos          | Token exclusivo del plan, generado automáticamente en su primera activación           |
 
-## 4. Stack tecnológico recomendado
+## 4. Stack tecnológico aprobado
 
-Se recomienda el siguiente stack para el MVP:
+El MVP utilizará el siguiente stack:
 
 - **Backend y aplicación web:** Laravel con PHP.
 - **Vistas:** Blade y componentes del lado del servidor.
@@ -67,7 +67,6 @@ flowchart LR
     WEB -->|"Lectura y escritura"| DB[("PostgreSQL")]
     SCH["Programador de tareas"] -->|"Ejecuta casos de uso"| WEB
     WEB -->|"Envía mensajes"| WA["WhatsApp Cloud API"]
-    WA -->|"Webhook de estados y eventos"| WEB
     WEB -->|"Registros técnicos"| LOG["Logs de aplicación"]
 ```
 
@@ -81,13 +80,13 @@ La aplicación se organizará por módulos funcionales. Cada módulo agrupará s
 
 - **Autenticación:** inicio y cierre de sesión de especialistas.
 - **Especialistas:** datos mínimos de las cuentas creadas manualmente.
-- **Pacientes:** registro, consulta, edición, activación y eliminación lógica.
+- **Pacientes:** registro, consulta, edición, activación y archivo lógico.
 - **Ejercicios:** biblioteca reutilizable de ejercicios.
 - **Rutinas:** creación de rutinas y biblioteca de rutinas reutilizables.
 - **Planes:** asignación de planes a pacientes, estados, fechas y duplicación entre pacientes.
 - **Portal público:** resolución del token y presentación de la rutina vigente.
 - **Recordatorios:** configuración de días, horarios y evaluación de envíos programados.
-- **Mensajería WhatsApp:** composición, envío, recepción de webhooks y registro de resultados.
+- **Mensajería WhatsApp:** composición, envío y registro del resultado inmediato.
 - **Operación y logs:** diagnóstico de tareas programadas, errores e integraciones.
 
 ### 6.2 Reglas entre módulos
@@ -128,7 +127,7 @@ Esta separación es lógica y vive dentro del mismo proyecto. No obliga a crear 
 4. Si el plan está activo y existe exactamente una rutina vigente, la muestra.
 5. Si el plan está pausado, finalizado o no tiene una rutina disponible, muestra el estado correspondiente.
 
-El token identifica al plan, no a una rutina específica. Su administración será manual durante el MVP y no vencerá automáticamente mientras el plan continúe activo. Debe ser posible invalidarlo o reemplazarlo mediante una operación administrativa, aunque inicialmente no exista una pantalla dedicada.
+El token identifica exclusivamente a un plan, no a una rutina específica, y se genera automáticamente durante su primera activación válida. No vence automáticamente ni puede reasignarse a otro plan. Solo una operación técnica autorizada puede revocarlo o rotarlo por seguridad.
 
 ### 8.3 Envío programado de recordatorios
 
@@ -156,19 +155,6 @@ La combinación de plan, fecha y horario debe ser única para impedir mensajes d
 
 No habrá reintentos automáticos en el MVP. Cada envío fallido u omitido debe conservar un motivo suficientemente preciso para diagnóstico.
 
-### 8.4 Recepción de webhooks de WhatsApp
-
-La aplicación expondrá una ruta pública exclusiva para webhooks. Esta ruta deberá:
-
-1. Atender la verificación inicial exigida por Meta.
-2. Validar la autenticidad de las notificaciones recibidas.
-3. Responder rápidamente antes de realizar procesamiento adicional.
-4. Relacionar los estados de entrega con el registro de mensaje correspondiente cuando exista un identificador conocido.
-5. Registrar eventos no reconocidos sin interrumpir el endpoint.
-6. Evitar procesar dos veces el mismo evento.
-
-En el MVP, el uso principal del webhook será actualizar estados técnicos de los mensajes enviados. Las respuestas conversacionales de pacientes no forman parte del alcance funcional; si Meta las entrega, podrán registrarse como evento técnico o ignorarse de manera controlada.
-
 ## 9. Persistencia y manejo de datos
 
 PostgreSQL será la única fuente de verdad de la aplicación. El modelo completo se definirá en `modelo-de-datos.md`.
@@ -178,12 +164,13 @@ Se aplicarán los siguientes criterios generales:
 - Las entidades funcionales recuperables utilizarán eliminación lógica.
 - Las consultas normales excluirán registros eliminados lógicamente.
 - La restauración podrá realizarse inicialmente mediante una operación técnica, sin requerir una pantalla en el MVP.
-- Los registros de mensajes, intentos, omisiones y errores no se eliminarán al eliminar lógicamente un paciente o plan.
-- Los registros técnicos conservarán la referencia necesaria para investigar fallos y no serán anonimizados en el MVP.
+- Un plan finalizado es terminal; para reutilizar su estructura se crea una copia nueva en pausa.
+- Las ejecuciones de recordatorios, incluidas omisiones y errores, no se eliminarán al archivar un paciente o plan.
+- El historial conservará las referencias y copias mínimas necesarias para investigar fallos. La retención y futura purga se definirán antes del despliegue productivo.
 - Las migraciones de base de datos formarán parte del repositorio y serán la única vía normal para modificar el esquema.
 - Las fechas de auditoría se almacenarán de forma consistente; las decisiones de calendario del negocio se resolverán en `America/Lima`.
 
-La política anterior ajusta la eliminación en cascada descrita inicialmente en algunos requisitos: la eliminación funcional será lógica y el historial técnico de mensajería se conservará. Los documentos de requisitos deberán alinearse con esta decisión para evitar contradicciones durante la implementación.
+Archivar un paciente pausa sus planes, desactiva sus recordatorios y revoca sus enlaces, pero conserva la configuración y el historial técnico mínimo para una posible restauración.
 
 ## 10. Seguridad
 
@@ -202,14 +189,13 @@ La política anterior ajusta la eliminación en cascada descrita inicialmente en
 - El token no contendrá DNI, teléfono, identificadores consecutivos ni otros datos deducibles.
 - Las respuestas públicas no revelarán si existe un paciente independiente del plan consultado.
 - Los tokens no se escribirán completos en logs de acceso o aplicación; cuando sea necesario identificarlos se usará una versión truncada o una huella.
-- Se aplicará limitación básica de solicitudes al endpoint público y al webhook.
+- Se aplicará limitación básica de solicitudes al endpoint público.
 
 ### 10.3 Secretos e integración
 
-- Las credenciales de PostgreSQL, la clave de aplicación, los tokens de Meta y los secretos del webhook se almacenarán en variables de entorno.
+- Las credenciales de PostgreSQL, la clave de aplicación y los tokens de Meta se almacenarán en variables de entorno.
 - Los archivos locales con secretos no se versionarán.
 - El túnel y el despliegue en VPS deberán ofrecer HTTPS válido.
-- El endpoint de webhook validará la firma enviada por Meta, además del proceso de verificación inicial.
 
 ## 11. Logs y observabilidad
 
@@ -244,9 +230,9 @@ La ejecución inicial tendrá estos componentes:
 - variables de entorno locales;
 - archivos de log.
 
-La aplicación, el scheduler, PostgreSQL y el túnel deberán permanecer activos para que el servicio, los recordatorios y los webhooks funcionen. Si la computadora se suspende, pierde Internet o detiene alguno de esos procesos, no se garantiza el envío de recordatorios. Como el MVP no tendrá reintentos automáticos, esta limitación debe considerarse parte de la operación inicial.
+La aplicación, el scheduler, PostgreSQL y la conexión a Internet deberán permanecer activos para que funcionen los recordatorios. El túnel también deberá estar activo para abrir enlaces desde otro dispositivo. Si la computadora se suspende o detiene alguno de esos procesos, no se garantiza el envío. Esta limitación forma parte de la validación local y no constituye operación productiva.
 
-La URL pública usada por Meta debe ser estable mientras la integración esté configurada. Si el proveedor del túnel cambia la URL al reiniciarse, será necesario actualizar la configuración del webhook y cualquier configuración externa relacionada.
+La URL pública incluida en los mensajes debe mantenerse estable durante cada prueba. Si el proveedor del túnel cambia la URL, será necesario actualizar la configuración antes de generar o enviar nuevos enlaces.
 
 ### 12.2 Despliegue futuro en VPS
 
@@ -278,7 +264,6 @@ La implementación deberá incluir pruebas automatizadas para las reglas de mayo
 - evaluación de condiciones previas al envío;
 - idempotencia de plan, fecha y horario;
 - registro de envíos fallidos u omitidos;
-- verificación, autenticidad e idempotencia de webhooks.
 
 Las pruebas de integración con WhatsApp usarán un cliente sustituible o simulado. Además, antes de habilitar el uso real se realizará al menos una prueba manual controlada con las credenciales del entorno correspondiente.
 
@@ -289,7 +274,6 @@ Las siguientes decisiones no bloquean la arquitectura general, pero deberán res
 - proveedor y modalidad del túnel HTTPS;
 - proveedor y características del VPS;
 - configuración definitiva de WhatsApp Cloud API;
-- contenido exacto de los eventos de webhook que se conservarán;
 - período de retención y rotación de logs;
 - mecanismo técnico para crear y restaurar especialistas, pacientes o planes sin pantalla administrativa;
 - definición detallada del modelo de datos;
