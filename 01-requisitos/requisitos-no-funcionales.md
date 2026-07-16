@@ -42,10 +42,6 @@ Las credenciales de WhatsApp Cloud API no deben quedar expuestas en el codigo fu
 
 Deben gestionarse mediante configuracion segura del entorno.
 
-### RNF-SEG-007 Verificacion de integracion WhatsApp
-
-Los endpoints o webhooks relacionados con WhatsApp deben validar que las solicitudes provengan de una fuente autorizada cuando esa funcionalidad sea necesaria para el MVP.
-
 ## 3. Privacidad y datos personales
 
 ### RNF-PRI-001 Minimizacion de datos
@@ -66,9 +62,9 @@ Los datos del paciente no deben compartirse con terceros distintos de los servic
 
 ### RNF-PRI-005 Retencion de datos
 
-La politica final de retencion de datos queda pendiente de definicion antes de un despliegue productivo.
+La politica final de retencion y purga de datos queda pendiente de definicion antes de un despliegue productivo.
 
-Para el MVP local, el sistema debe evitar eliminaciones accidentales que comprometan la trazabilidad minima de planes y envios.
+Para el MVP local, los pacientes se archivan mediante eliminacion logica. Sus datos permanecen reservados mientras sean recuperables y el historial tecnico minimo de recordatorios se conserva.
 
 ## 4. Rendimiento y capacidad
 
@@ -114,7 +110,7 @@ El sistema debe evitar que una misma ejecucion programada genere envios duplicad
 
 ### RNF-OPE-005 Zona horaria
 
-Los recordatorios deben calcularse usando la zona horaria configurada para la clinica, inicialmente `America/Lima`.
+Los recordatorios deben calcularse usando la zona horaria fija del MVP: `America/Lima`.
 
 ## 6. Usabilidad y accesibilidad basica
 
@@ -148,11 +144,9 @@ La solucion debe mantenerse dentro de un alcance razonable para ser desarrollada
 
 Las decisiones de producto, alcance, reglas y requisitos deben mantenerse en archivos Markdown versionados junto con el proyecto.
 
-### RNF-MAN-003 Stack pendiente de definicion
+### RNF-MAN-003 Stack tecnologico aprobado
 
-El stack tecnologico se definira despues de cerrar la documentacion de producto, requisitos y casos de uso.
-
-Los requisitos no deben asumir todavia un framework, proveedor de base de datos o plataforma de despliegue especifica.
+El MVP usara Laravel, Blade, Alpine.js para interacciones puntuales, Tailwind CSS y PostgreSQL. La aplicacion mantendra una arquitectura de monolito modular renderizado por el servidor.
 
 ### RNF-MAN-004 Configuracion separada del codigo
 
@@ -170,7 +164,7 @@ El sistema debe impedir rutinas superpuestas, fuera del rango del plan o no cont
 
 ### RNF-DAT-003 Historial tecnico minimo
 
-El sistema debe conservar el historial tecnico basico de intentos de envio necesario para consultar si WhatsApp acepto o fallo un recordatorio.
+El sistema debe conservar el historial tecnico basico de ejecuciones omitidas, solicitudes aceptadas y solicitudes fallidas.
 
 ### RNF-DAT-004 Datos necesarios para operar recordatorios
 

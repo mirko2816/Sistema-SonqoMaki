@@ -19,7 +19,7 @@ El sistema debe permitir que el especialista use la aplicacion web mediante una 
 El especialista puede:
 
 - iniciar y cerrar sesion;
-- registrar, consultar, editar, activar, inactivar o eliminar pacientes;
+- registrar, consultar, editar, activar, inactivar o archivar pacientes;
 - gestionar ejercicios reutilizables;
 - crear y editar planes de ejercicios;
 - crear y ordenar rutinas dentro de un plan;
@@ -63,12 +63,12 @@ El sistema debe permitir registrar pacientes con los datos minimos del MVP:
 - nombres;
 - apellidos;
 - telefono WhatsApp con formato peruano `+51`;
-- DNI;
+- DNI, opcional;
 - fecha de consentimiento para recibir mensajes por WhatsApp.
 
 ### RF-PAC-002 Validacion de datos del paciente
 
-El sistema debe validar que el telefono tenga formato peruano `+51`, que el telefono normalizado no se repita entre pacientes registrados y que el DNI no se repita entre pacientes registrados.
+El sistema debe validar que el telefono tenga formato peruano `+51`, que el telefono normalizado no se repita entre pacientes activos, inactivos o archivados y que el DNI, cuando se proporcione, tenga ocho digitos y no se repita.
 
 ### RF-PAC-003 Listado de pacientes
 
@@ -88,26 +88,24 @@ El sistema debe permitir marcar a un paciente como **activo o inactivo**.
 
 Un paciente inactivo no debe recibir recordatorios.
 
-### RF-PAC-007 Eliminacion de paciente
+### RF-PAC-007 Archivo de paciente
 
-El sistema debe permitir eliminar pacientes.
+El sistema debe permitir archivar pacientes mediante eliminacion logica.
 
-Antes de confirmar la eliminacion, si el paciente tiene planes asociados, el sistema debe mostrar una advertencia clara indicando que tambien se eliminaran sus planes, rutinas configuradas, recordatorios, enlaces publicos y registros asociados que dependan directamente del paciente.
+Antes de confirmar, el sistema debe advertir que el paciente dejara de aparecer en las consultas normales, sus planes quedaran pausados, sus recordatorios se desactivaran y sus enlaces publicos se revocaran.
 
-La eliminacion debe requerir una confirmacion explicita del especialista.
+El archivo debe requerir una confirmacion explicita del especialista.
 
-### RF-PAC-008 Eliminacion en cascada del paciente
+### RF-PAC-008 Conservacion y restauracion del paciente archivado
 
-Cuando se confirme la eliminacion de un paciente, el sistema debe eliminar en cascada la informacion operativa propia de ese paciente:
+Cuando se archive un paciente, el sistema debe conservar su informacion operativa para una posible restauracion tecnica:
 
-- planes de ejercicios asociados;
-- rutinas configuradas dentro de esos planes;
-- ejercicios configurados dentro de esas rutinas;
-- recordatorios del plan;
-- enlaces publicos asociados;
-- historial tecnico de envios asociado al paciente o a sus planes.
+- planes, rutinas y ejercicios configurados;
+- horarios de recordatorio, que quedaran inactivos;
+- enlaces publicos, que quedaran revocados;
+- historial de ejecuciones de recordatorios.
 
-La eliminacion del paciente no debe eliminar ejercicios guardados en la biblioteca ni rutinas guardadas en la biblioteca, porque esos elementos son reutilizables e independientes del paciente.
+El archivo no debe modificar ejercicios ni plantillas de rutina de las bibliotecas. La restauracion sera una operacion tecnica durante el MVP y no reactivara automaticamente planes, recordatorios ni enlaces.
 
 ### RF-PAC-009 Consentimiento WhatsApp
 
@@ -150,7 +148,7 @@ La URL de material puede apuntar a YouTube u otro recurso externo. El MVP no deb
 
 El sistema debe mantener una biblioteca de ejercicios independiente de los pacientes y planes.
 
-Los ejercicios guardados en esta biblioteca deben poder seleccionarse al configurar rutinas y no deben eliminarse cuando se elimine un paciente.
+Los ejercicios guardados en esta biblioteca deben poder seleccionarse al configurar rutinas y no deben modificarse cuando se archive un paciente.
 
 ## 6. Planes de ejercicios
 
@@ -189,6 +187,8 @@ Cada plan debe gestionar sus propias rutinas, recordatorios y enlace publico.
 Cuando el plan llegue a su fecha de fin, el sistema debe dejar de enviar recordatorios asociados a ese plan.
 
 El cambio automatico de estado a finalizado puede implementarse como parte de la logica de ejecucion o como una tarea programada.
+
+Un plan finalizado no debe poder reactivarse ni volver a pausa. Para reutilizarlo debe duplicarse como un plan nuevo.
 
 ### RF-PLA-006 Duplicacion de plan desde otro paciente
 
@@ -246,21 +246,23 @@ Un plan debe tener al menos una rutina y cada rutina debe tener al menos un ejer
 
 ### RF-RUT-008 Biblioteca de rutinas
 
-El sistema debe permitir guardar rutinas reutilizables en una biblioteca de rutinas independiente de los pacientes.
+El sistema debe permitir crear, consultar, editar y archivar rutinas reutilizables en una biblioteca independiente de los pacientes.
 
 Una rutina de biblioteca debe poder usarse como base para crear una rutina dentro de un plan de paciente.
 
 Al usar una rutina de biblioteca en un plan, el sistema debe crear una copia editable para ese plan, de modo que los cambios del paciente no modifiquen la rutina original de la biblioteca.
 
-Las rutinas guardadas en la biblioteca no deben eliminarse cuando se elimine un paciente.
+Las rutinas guardadas en la biblioteca no deben modificarse cuando se archive un paciente.
 
 ## 8. Pagina publica de rutina
 
 ### RF-PUB-001 Enlace seguro
 
-El sistema debe generar y gestionar automaticamente un enlace seguro asociado al plan del paciente.
+El sistema debe generar automaticamente un enlace seguro al activar el plan por primera vez.
 
 El especialista no debe administrar manualmente los enlaces.
+
+Cada enlace debe pertenecer exclusivamente a un plan y no puede reutilizarse para identificar otro. Solo una operacion tecnica autorizada puede revocarlo o rotarlo por seguridad.
 
 ### RF-PUB-002 Acceso sin cuenta
 
@@ -323,7 +325,7 @@ El especialista debe poder definir en que dias de la semana se enviaran los reco
 
 El especialista debe poder definir los horarios de envio de los recordatorios.
 
-Los horarios deben ejecutarse en la zona horaria configurada para la clinica, inicialmente `America/Lima`.
+Los horarios deben ejecutarse en la zona horaria fija del MVP: `America/Lima`.
 
 ### RF-REC-005 Pausar recordatorios
 
@@ -375,9 +377,9 @@ Hola {nombre}. Tu salud es importante. Recuerda realizar tu rutina de hoy: {enla
 
 El contenido final debe adaptarse a las reglas de plantillas aprobadas por Meta cuando corresponda.
 
-### RF-WPP-003 Registro de intento de envio
+### RF-WPP-003 Registro de ejecucion programada
 
-El sistema debe registrar por cada intento de envio:
+El sistema debe registrar cada ejecucion programada, aunque se omita antes de llamar a WhatsApp:
 
 - fecha y hora;
 - paciente;
@@ -387,20 +389,23 @@ El sistema debe registrar por cada intento de envio:
 - estado tecnico basico;
 - codigo o detalle tecnico del error, si existe.
 
-### RF-WPP-004 Estados tecnicos minimos
+### RF-WPP-004 Resultados tecnicos minimos
 
 El sistema debe distinguir como minimo entre:
 
-- aceptado o exitoso;
+- omitido;
+- aceptado;
 - fallido.
+
+`Aceptado` confirma solamente la respuesta inmediata de WhatsApp y no debe denominarse `exitoso`.
 
 ### RF-WPP-005 Sin reintentos automaticos
 
 El MVP no debe ejecutar reintentos automaticos si un envio falla. El sistema solo debe registrar el fallo.
 
-### RF-WPP-006 Historial basico de envios
+### RF-WPP-006 Historial basico de recordatorios
 
-El especialista debe poder consultar un historial basico de envios con los resultados tecnicos registrados.
+El especialista debe poder consultar un historial basico de ejecuciones de recordatorios, incluidas las omitidas, aceptadas y fallidas.
 
 ## 11. Dashboard y pantallas minimas
 
@@ -413,10 +418,11 @@ El sistema debe incluir como minimo las siguientes pantallas:
 - pacientes;
 - detalle de paciente;
 - biblioteca de ejercicios;
+- biblioteca de rutinas;
 - crear y editar plan;
 - configurar rutinas;
 - configurar recordatorios;
-- historial basico de envios;
+- historial basico de recordatorios;
 - pagina publica de rutina.
 
 ### RF-UI-002 Dashboard simple
@@ -453,3 +459,4 @@ Los siguientes requisitos del PDF quedan fuera del MVP por contradecir o exceder
 - historial completo de mensajes enviados y recibidos;
 - baja automatica del canal WhatsApp por respuestas entrantes;
 - reintentos automaticos de envio.
+- recepcion de webhooks y seguimiento de estados posteriores de entrega o lectura.
