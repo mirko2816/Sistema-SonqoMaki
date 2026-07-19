@@ -4,7 +4,7 @@ Aplicación web para registrar pacientes, preparar planes con rutinas, enviar re
 
 ## Estado
 
-La base técnica del MVP está inicializada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. Esta iteración no incluye autenticación ni funcionalidades del negocio.
+La base técnica del MVP está inicializada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. El módulo de autenticación del especialista incluye inicio y cierre de sesión; las funcionalidades del negocio se incorporarán en iteraciones posteriores.
 
 ## Decisiones principales del MVP
 
@@ -74,11 +74,29 @@ Para comprobar la conexión:
 php artisan db:show --database=pgsql
 ```
 
-Las migraciones del modelo funcional se incorporarán en iteraciones posteriores. Cuando existan, se ejecutarán con:
+Ejecuta las migraciones con:
 
 ```bash
 composer run migrate
 ```
+
+Las sesiones se almacenan en PostgreSQL mediante `SESSION_DRIVER=database`. En un entorno HTTPS configura además `SESSION_SECURE_COOKIE=true`; las cookies ya se restringen a HTTP y usan `SameSite=lax` por defecto.
+
+## Crear la cuenta inicial del especialista
+
+No existe registro público. Después de ejecutar las migraciones, crea la cuenta desde una terminal:
+
+```bash
+php artisan specialist:create
+```
+
+El comando solicita el correo y pide dos veces una contraseña oculta de al menos 12 caracteres. También puedes proporcionar únicamente el correo como argumento:
+
+```bash
+php artisan specialist:create especialista@ejemplo.com
+```
+
+No pases la contraseña como argumento ni la escribas en archivos de configuración. El comando normaliza el correo, genera el hash con la configuración segura de Laravel y rechaza cuentas duplicadas, incluso si cambia el uso de mayúsculas.
 
 ## Ejecución
 
@@ -114,7 +132,7 @@ php artisan key:generate --env=testing
 composer test
 ```
 
-La prueba inicial de la portada no escribe en la base de datos. Las futuras pruebas de integridad deberán ejecutarse contra `sonqo_maki_test`, nunca contra la base de desarrollo.
+Las pruebas de autenticación y restricciones se ejecutan contra PostgreSQL real en `sonqo_maki_test`, nunca contra la base de desarrollo.
 
 ## Organización modular
 

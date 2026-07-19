@@ -1,8 +1,5 @@
 <?php
 
-it('muestra la página técnica inicial', function () {
-    $this->get('/')
-        ->assertOk()
-        ->assertSee('Base técnica lista')
-        ->assertSee('America/Lima');
+it('redirige la raíz pública al inicio de sesión', function () {
+    $this->get('/')->assertRedirect(route('login'));
 });
