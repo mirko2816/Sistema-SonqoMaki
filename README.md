@@ -114,6 +114,8 @@ npm run dev
 
 La aplicación estará disponible normalmente en `http://127.0.0.1:8000`.
 
+Después de iniciar sesión en `/iniciar-sesion`, el especialista es dirigido a `/dashboard`, la ruta principal de la zona autenticada. El dashboard muestra por ahora un estado vacío real: los módulos de pacientes, ejercicios, rutinas, planes, recordatorios e historial todavía aparecen como “Próximamente” y no crean rutas simuladas.
+
 ## Recursos frontend
 
 ```bash
@@ -121,6 +123,8 @@ npm run build
 ```
 
 Blade renderiza la interfaz en el servidor. Alpine.js queda reservado para interacciones puntuales y Tailwind CSS se compila mediante Vite.
+
+Para verificar la interfaz, inicia Laravel y Vite, accede con la cuenta del especialista y comprueba el dashboard tanto en celular como en escritorio. En celular, el botón de menú abre la navegación lateral; puede cerrarse con su botón, tocando fuera o con la tecla `Escape`.
 
 ## Pruebas
 
