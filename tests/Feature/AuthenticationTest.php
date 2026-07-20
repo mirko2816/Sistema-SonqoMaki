@@ -9,15 +9,6 @@ use Illuminate\Support\Facades\RateLimiter;
 
 uses(RefreshDatabase::class);
 
-function specialist(array $attributes = []): User
-{
-    return User::create(array_merge([
-        'email' => 'especialista@sonqomaki.test',
-        'password' => 'Una-clave-segura-2026',
-        'is_active' => true,
-    ], $attributes));
-}
-
 it('muestra la pantalla de inicio de sesión a visitantes', function () {
     $this->get('/iniciar-sesion')
         ->assertOk()
@@ -32,7 +23,7 @@ it('permite iniciar sesión con credenciales correctas', function () {
     $this->post('/iniciar-sesion', [
         'email' => $user->email,
         'password' => 'Una-clave-segura-2026',
-    ])->assertRedirect(route('internal'));
+    ])->assertRedirect(route('dashboard'));
 
     $this->assertAuthenticatedAs($user);
 });
@@ -45,7 +36,7 @@ it('normaliza el email y lo autentica sin distinguir mayúsculas', function () {
     $this->post('/iniciar-sesion', [
         'email' => '  ESPECIALISTA@SONQOMAKI.TEST  ',
         'password' => 'Una-clave-segura-2026',
-    ])->assertRedirect(route('internal'));
+    ])->assertRedirect(route('dashboard'));
 
     $this->assertAuthenticatedAs($user);
 });
@@ -102,22 +93,10 @@ it('regenera la sesión después del inicio de sesión', function () {
     expect(session()->getId())->not->toBe($previousSessionId);
 });
 
-it('impide que un visitante acceda a una ruta protegida', function () {
-    $this->get('/inicio')->assertRedirect(route('login'));
-});
-
-it('permite que un especialista autenticado acceda a la página interna provisional', function () {
-    $this->actingAs(specialist())
-        ->get('/inicio')
-        ->assertOk()
-        ->assertSee('Acceso privado verificado')
-        ->assertSee('no contiene todavía el dashboard');
-});
-
 it('redirige al especialista autenticado fuera del formulario de inicio de sesión', function () {
     $this->actingAs(specialist())
         ->get('/iniciar-sesion')
-        ->assertRedirect(route('internal'));
+        ->assertRedirect(route('dashboard'));
 });
 
 it('permite cerrar sesión mediante POST', function () {
@@ -139,7 +118,7 @@ it('invalida la sesión y regenera el token CSRF al cerrar sesión', function ()
 
     expect(session()->getId())->not->toBe($previousSessionId)
         ->and(session()->token())->not->toBe($previousToken);
-    $this->get('/inicio')->assertRedirect(route('login'));
+    $this->get('/dashboard')->assertRedirect(route('login'));
 });
 
 it('no permite cerrar sesión mediante GET', function () {
