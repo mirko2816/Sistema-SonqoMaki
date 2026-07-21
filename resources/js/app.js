@@ -39,6 +39,31 @@ Alpine.data('mobileNavigation', () => ({
     },
 }));
 
+Alpine.data('routineTemplateEditor', (searchUrl, initialItems = []) => ({
+    query: '', results: [], loading: false, submitting: false,
+    items: initialItems.map((item, index) => ({ ...item, key: `stored-${item.id || index}-${crypto.randomUUID()}` })),
+    init() { this.search(); },
+    async search() {
+        this.loading = true;
+        try {
+            const response = await fetch(`${searchUrl}?search=${encodeURIComponent(this.query)}`, { headers: { Accept: 'application/json' } });
+            this.results = response.ok ? (await response.json()).data : [];
+        } finally { this.loading = false; }
+    },
+    add(source) {
+        this.items.push({ ...source, id: null, source_exercise_id: source.id, key: `new-${crypto.randomUUID()}` });
+        this.$nextTick(() => document.getElementById(`copy-name-${this.items.at(-1).key}`)?.focus());
+    },
+    remove(index) { this.items.splice(index, 1); },
+    move(index, delta) {
+        const target = index + delta;
+        if (target < 0 || target >= this.items.length) return;
+        [this.items[index], this.items[target]] = [this.items[target], this.items[index]];
+        this.items = [...this.items];
+    },
+    prepareSubmit() { this.submitting = true; },
+}));
+
 window.Alpine = Alpine;
 
 Alpine.start();
