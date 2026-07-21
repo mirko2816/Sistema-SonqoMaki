@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Patient;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -12,5 +13,20 @@ function specialist(array $attributes = []): User
         'email' => 'especialista@sonqomaki.test',
         'password' => 'Una-clave-segura-2026',
         'is_active' => true,
+    ], $attributes));
+}
+
+function patient(array $attributes = []): Patient
+{
+    static $sequence = 0;
+    $sequence++;
+
+    return Patient::create(array_merge([
+        'first_names' => 'Ana',
+        'last_names' => 'Quispe',
+        'dni' => str_pad((string) $sequence, 8, '0', STR_PAD_LEFT),
+        'whatsapp_phone' => '+519'.str_pad((string) $sequence, 8, '0', STR_PAD_LEFT),
+        'whatsapp_consented_on' => '2026-07-10',
+        'status' => Patient::STATUS_ACTIVE,
     ], $attributes));
 }
