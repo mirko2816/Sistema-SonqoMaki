@@ -23,7 +23,7 @@ it('permite que el especialista acceda al dashboard con el layout autenticado', 
         ->assertSee($user->email);
 });
 
-it('muestra pacientes disponible y las secciones futuras sin enlaces falsos', function () {
+it('muestra pacientes y ejercicios disponibles y las secciones futuras sin enlaces falsos', function () {
     $response = $this->actingAs(specialist())->get('/dashboard');
 
     $response
@@ -41,11 +41,13 @@ it('muestra pacientes disponible y las secciones futuras sin enlaces falsos', fu
         ->assertSee('Próximamente')
         ->assertDontSee('href="#"', false)
         ->assertSee('href="'.route('patients.index').'"', false)
+        ->assertSee('href="'.route('exercises.index').'"', false)
         ->assertDontSee('href="/planes"', false);
 
     expect(app('router')->getRoutes()->getByName('patients.index'))->not->toBeNull();
+    expect(app('router')->getRoutes()->getByName('exercises.index'))->not->toBeNull();
 
-    foreach (['exercises.index', 'routines.index', 'plans.index', 'reminders.index'] as $routeName) {
+    foreach (['routines.index', 'plans.index', 'reminders.index'] as $routeName) {
         expect(app('router')->getRoutes()->getByName($routeName))->toBeNull();
     }
 });
