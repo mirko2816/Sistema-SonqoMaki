@@ -27,6 +27,6 @@
     </div>
 
     <p class="mt-5 text-sm leading-6 text-slate-500">
-        Los módulos de pacientes, ejercicios, rutinas, planes y recordatorios se habilitarán en próximas etapas.
+        El módulo de pacientes ya está disponible. Los módulos de ejercicios, rutinas, planes y recordatorios se habilitarán en próximas etapas.
     </p>
 </x-layouts.authenticated>

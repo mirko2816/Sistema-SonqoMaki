@@ -3,7 +3,7 @@
 @php
     $items = [
         ['label' => 'Dashboard', 'icon' => 'home', 'route' => 'dashboard'],
-        ['label' => 'Pacientes', 'icon' => 'users'],
+        ['label' => 'Pacientes', 'icon' => 'users', 'route' => 'patients.index', 'pattern' => 'patients.*'],
         ['label' => 'Ejercicios', 'icon' => 'activity'],
         ['label' => 'Rutinas', 'icon' => 'clipboard'],
         ['label' => 'Planes', 'icon' => 'calendar'],
@@ -21,10 +21,10 @@
                         href="{{ route($item['route']) }}"
                         @class([
                             'flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold focus-visible:outline-none',
-                            'bg-brand-50 text-brand-800 ring-1 ring-inset ring-brand-200' => request()->routeIs($item['route']),
-                            'text-slate-700 hover:bg-slate-100 hover:text-slate-950' => ! request()->routeIs($item['route']),
+                            'bg-brand-50 text-brand-800 ring-1 ring-inset ring-brand-200' => request()->routeIs($item['pattern'] ?? $item['route']),
+                            'text-slate-700 hover:bg-slate-100 hover:text-slate-950' => ! request()->routeIs($item['pattern'] ?? $item['route']),
                         ])
-                        @if (request()->routeIs($item['route'])) aria-current="page" @endif
+                        @if (request()->routeIs($item['pattern'] ?? $item['route'])) aria-current="page" @endif
                     >
                         <x-navigation-icon :name="$item['icon']" />
                         <span>{{ $item['label'] }}</span>
