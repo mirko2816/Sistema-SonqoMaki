@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Modules\Exercises\Support\ExerciseData;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Exercise extends Model
@@ -33,5 +34,10 @@ class Exercise extends Model
     protected function formattedDuration(): Attribute
     {
         return Attribute::get(fn (): string => ExerciseData::formatDuration($this->duration_seconds));
+    }
+
+    public function templateCopies(): HasMany
+    {
+        return $this->hasMany(RoutineTemplateExercise::class, 'source_exercise_id');
     }
 }
