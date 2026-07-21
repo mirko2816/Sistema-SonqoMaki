@@ -4,7 +4,7 @@ Aplicación web para registrar pacientes, preparar planes con rutinas, enviar re
 
 ## Estado
 
-La base técnica del MVP está inicializada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. La autenticación del especialista y los módulos de pacientes y biblioteca de ejercicios están disponibles; las demás funcionalidades del negocio se incorporarán en iteraciones posteriores.
+La base técnica del MVP está inicializada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. La autenticación del especialista y los módulos de pacientes, biblioteca de ejercicios y biblioteca de plantillas de rutina están disponibles; las demás funcionalidades del negocio se incorporarán en iteraciones posteriores.
 
 ## Decisiones principales del MVP
 
@@ -114,7 +114,7 @@ npm run dev
 
 La aplicación estará disponible normalmente en `http://127.0.0.1:8000`.
 
-Después de iniciar sesión en `/iniciar-sesion`, el especialista es dirigido a `/dashboard`, la ruta principal de la zona autenticada. El módulo protegido de pacientes está disponible en `/pacientes` y permite registrar, buscar, consultar, editar, activar, inactivar y archivar pacientes. La biblioteca protegida de ejercicios está disponible en `/ejercicios` y permite crear, buscar, consultar, editar y retirar ejercicios de forma lógica. El dashboard conserva su estado vacío real hasta que se implemente el módulo de planes; las demás secciones futuras continúan como “Próximamente” y no crean rutas simuladas.
+Después de iniciar sesión en `/iniciar-sesion`, el especialista es dirigido a `/dashboard`, la ruta principal de la zona autenticada. El módulo protegido de pacientes está disponible en `/pacientes`; la biblioteca de ejercicios, en `/ejercicios`; y la biblioteca de plantillas de rutina, en `/rutinas`. Esta última permite crear, buscar, consultar, editar, componer, ordenar y archivar plantillas mediante copias independientes de ejercicios. El dashboard conserva su estado vacío real hasta que se implemente el módulo de planes; las demás secciones futuras continúan como “Próximamente” y no crean rutas simuladas.
 
 ## Recursos frontend
 
@@ -140,7 +140,7 @@ Las pruebas de autenticación y restricciones se ejecutan contra PostgreSQL real
 
 ## Organización modular
 
-Los módulos funcionales viven bajo `app/Modules` y se añaden uno por uno. Pacientes incluye casos de uso para crear, editar, cambiar estado y archivar; Ejercicios centraliza su normalización, presentación de duración y casos de uso para crear, editar y retirar. Las rutas, controladores, solicitudes y vistas mantienen las convenciones de Laravel. Esto conserva el monolito modular sin introducir capas genéricas prematuras.
+Los módulos funcionales viven bajo `app/Modules` y se añaden uno por uno. Pacientes incluye casos de uso para crear, editar, cambiar estado y archivar; Ejercicios centraliza su normalización, presentación de duración y casos de uso para crear, editar y retirar; RoutineTemplates encapsula la creación, sincronización ordenada y archivo transaccional de copias independientes. Las rutas, controladores, solicitudes y vistas mantienen las convenciones de Laravel. Esto conserva el monolito modular sin introducir capas genéricas prematuras.
 
 ## Documentación
 
