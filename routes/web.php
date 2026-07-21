@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\PatientController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,5 +25,8 @@ Route::middleware('auth')->group(function () {
         ->names('patients')
         ->except('destroy');
     Route::delete('/pacientes/{patient}', [PatientController::class, 'destroy'])->name('patients.destroy');
+    Route::resource('/ejercicios', ExerciseController::class)
+        ->parameters(['ejercicios' => 'exercise'])
+        ->names('exercises');
     Route::post('/cerrar-sesion', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
