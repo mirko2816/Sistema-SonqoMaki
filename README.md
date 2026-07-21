@@ -114,7 +114,7 @@ npm run dev
 
 La aplicación estará disponible normalmente en `http://127.0.0.1:8000`.
 
-Después de iniciar sesión en `/iniciar-sesion`, el especialista es dirigido a `/dashboard`, la ruta principal de la zona autenticada. El dashboard muestra por ahora un estado vacío real: los módulos de pacientes, ejercicios, rutinas, planes, recordatorios e historial todavía aparecen como “Próximamente” y no crean rutas simuladas.
+Después de iniciar sesión en `/iniciar-sesion`, el especialista es dirigido a `/dashboard`, la ruta principal de la zona autenticada. El módulo protegido de pacientes está disponible en `/pacientes` y permite registrar, buscar, consultar, editar, activar, inactivar y archivar pacientes. El dashboard conserva su estado vacío real hasta que se implemente el módulo de planes; las demás secciones futuras continúan como “Próximamente” y no crean rutas simuladas.
 
 ## Recursos frontend
 
@@ -140,7 +140,7 @@ Las pruebas de autenticación y restricciones se ejecutan contra PostgreSQL real
 
 ## Organización modular
 
-Los futuros módulos funcionales vivirán bajo `app/Modules` y se añadirán uno por uno. Rutas, controladores, solicitudes y vistas mantienen las convenciones de Laravel; los módulos agrupan únicamente casos de uso, reglas y adaptadores cuando exista una necesidad concreta. Esto conserva el monolito modular sin introducir capas genéricas prematuras.
+Los módulos funcionales viven bajo `app/Modules` y se añaden uno por uno. Pacientes incluye casos de uso para crear, editar, cambiar estado y archivar; rutas, controladores, solicitudes y vistas mantienen las convenciones de Laravel. Esto conserva el monolito modular sin introducir capas genéricas prematuras.
 
 ## Documentación
 
