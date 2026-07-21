@@ -4,7 +4,7 @@
     $items = [
         ['label' => 'Dashboard', 'icon' => 'home', 'route' => 'dashboard'],
         ['label' => 'Pacientes', 'icon' => 'users', 'route' => 'patients.index', 'pattern' => 'patients.*'],
-        ['label' => 'Ejercicios', 'icon' => 'activity'],
+        ['label' => 'Ejercicios', 'icon' => 'activity', 'route' => 'exercises.index', 'pattern' => 'exercises.*'],
         ['label' => 'Rutinas', 'icon' => 'clipboard'],
         ['label' => 'Planes', 'icon' => 'calendar'],
         ['label' => 'Recordatorios', 'icon' => 'bell'],
