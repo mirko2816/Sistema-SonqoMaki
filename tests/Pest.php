@@ -2,6 +2,7 @@
 
 use App\Models\Exercise;
 use App\Models\Patient;
+use App\Models\RoutineTemplate;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -45,4 +46,23 @@ function exercise(array $attributes = []): Exercise
         'repetitions' => 12,
         'material_url' => 'https://example.com/material/'.$sequence,
     ], $attributes));
+}
+
+function routineTemplate(array $attributes = [], array $exercises = []): RoutineTemplate
+{
+    static $sequence = 0;
+    $sequence++;
+    $template = RoutineTemplate::create(array_merge([
+        'name' => 'Rutina de prueba '.$sequence,
+        'status' => RoutineTemplate::STATUS_ACTIVE,
+    ], $attributes));
+
+    foreach ($exercises as $index => $exerciseAttributes) {
+        $template->exercises()->create(array_merge([
+            'position' => $index + 1,
+            'name' => 'Copia '.($index + 1),
+        ], $exerciseAttributes));
+    }
+
+    return $template;
 }
