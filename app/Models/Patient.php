@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Patient extends Model
@@ -34,5 +35,10 @@ class Patient extends Model
     protected function fullName(): Attribute
     {
         return Attribute::get(fn (): string => "$this->first_names $this->last_names");
+    }
+
+    public function plans(): HasMany
+    {
+        return $this->hasMany(Plan::class)->orderByDesc('starts_on')->orderByDesc('id');
     }
 }
