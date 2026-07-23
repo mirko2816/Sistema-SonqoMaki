@@ -95,6 +95,8 @@ class PatientController extends Controller
 
     public function show(Patient $patient): View
     {
+        $patient->load(['plans' => fn ($query) => $query->withCount('routines')]);
+
         return view('patients.show', compact('patient'));
     }
 
