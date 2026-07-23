@@ -294,8 +294,10 @@ Reglas:
 - El token se genera con al menos 32 bytes aleatorios y se codifica con Base64 URL-safe.
 - La búsqueda pública calcula SHA-256 del token recibido y consulta `token_hash`.
 - `token_ciphertext` permite reconstruir la URL para futuros recordatorios sin almacenar el token en texto plano.
+- La regla “no almacenar tokens públicos en texto plano” exige esta combinación de hash y cifrado; no exige eliminar `token_ciphertext`. Un esquema de solo hash impediría reutilizar el enlace vigente en recordatorios futuros.
 - Solo puede existir un enlace no revocado por plan mediante índice único parcial sobre `plan_id WHERE revoked_at IS NULL`.
 - Un enlace no puede cambiar de `plan_id` después de crearse.
+- Esta inmutabilidad se refuerza mediante un trigger PostgreSQL, además de excluir `plan_id` de la asignación masiva del modelo.
 - No existe `expires_at`: el enlace no vence automáticamente. La disponibilidad depende del token, el plan, sus fechas y su estado.
 - Reemplazar un token revoca el actual y crea otro dentro de una transacción.
 - El token completo no se escribe en logs ni en el historial de envíos.

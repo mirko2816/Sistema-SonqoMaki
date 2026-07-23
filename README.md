@@ -4,7 +4,7 @@ Aplicación web para registrar pacientes, preparar planes con rutinas, enviar re
 
 ## Estado
 
-La base técnica del MVP está inicializada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. La autenticación del especialista y los módulos de pacientes, biblioteca de ejercicios y biblioteca de plantillas de rutina están disponibles; las demás funcionalidades del negocio se incorporarán en iteraciones posteriores.
+La base técnica del MVP está inicializada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. Están disponibles la autenticación, pacientes, biblioteca de ejercicios, plantillas reutilizables y planes asignados con rutinas, ejercicios, estados, duplicación y enlace seguro preparado. La página pública, los recordatorios y WhatsApp se incorporarán en iteraciones posteriores.
 
 ## Decisiones principales del MVP
 
@@ -80,6 +80,8 @@ Ejecuta las migraciones con:
 composer run migrate
 ```
 
+La migración de planes habilita la extensión PostgreSQL `btree_gist` para impedir en la propia base de datos que dos rutinas no archivadas del mismo plan se superpongan. El usuario de migraciones debe poder ejecutar `CREATE EXTENSION IF NOT EXISTS btree_gist`.
+
 Las sesiones se almacenan en PostgreSQL mediante `SESSION_DRIVER=database`. En un entorno HTTPS configura además `SESSION_SECURE_COOKIE=true`; las cookies ya se restringen a HTTP y usan `SameSite=lax` por defecto.
 
 ## Crear la cuenta inicial del especialista
@@ -114,7 +116,11 @@ npm run dev
 
 La aplicación estará disponible normalmente en `http://127.0.0.1:8000`.
 
-Después de iniciar sesión en `/iniciar-sesion`, el especialista es dirigido a `/dashboard`, la ruta principal de la zona autenticada. El módulo protegido de pacientes está disponible en `/pacientes`; la biblioteca de ejercicios, en `/ejercicios`; y la biblioteca de plantillas de rutina, en `/rutinas`. Esta última permite crear, buscar, consultar, editar, componer, ordenar y archivar plantillas mediante copias independientes de ejercicios. El dashboard conserva su estado vacío real hasta que se implemente el módulo de planes; las demás secciones futuras continúan como “Próximamente” y no crean rutas simuladas.
+Después de iniciar sesión en `/iniciar-sesion`, el especialista es dirigido a `/dashboard`. Pacientes está en `/pacientes`, ejercicios en `/ejercicios`, plantillas en `/rutinas` y planes asignados en `/planes`. Desde un plan se configuran rutinas manuales o copiadas, ejercicios y orden; también se valida su activación, se cambia de estado y se duplica. El dashboard muestra una fila por plan activo y declara honestamente los recordatorios como “Sin configurar”.
+
+La primera activación crea un token de al menos 32 bytes aleatorios. PostgreSQL guarda su hash SHA-256 para resolución, una copia cifrada con `APP_KEY` para construir futuros recordatorios y un prefijo no sensible para diagnóstico; nunca guarda ni registra el token en texto plano.
+
+La finalización automática puede ejecutarse manualmente con `php artisan plans:finish-expired`. El scheduler la programa diariamente a las 00:05 en `America/Lima`; en operación continua debe mantenerse activo `php artisan schedule:work` o un cron equivalente.
 
 ## Recursos frontend
 
@@ -140,7 +146,7 @@ Las pruebas de autenticación y restricciones se ejecutan contra PostgreSQL real
 
 ## Organización modular
 
-Los módulos funcionales viven bajo `app/Modules` y se añaden uno por uno. Pacientes incluye casos de uso para crear, editar, cambiar estado y archivar; Ejercicios centraliza su normalización, presentación de duración y casos de uso para crear, editar y retirar; RoutineTemplates encapsula la creación, sincronización ordenada y archivo transaccional de copias independientes. Las rutas, controladores, solicitudes y vistas mantienen las convenciones de Laravel. Esto conserva el monolito modular sin introducir capas genéricas prematuras.
+Los módulos funcionales viven bajo `app/Modules`. Pacientes incluye creación, edición, estado y archivo; Ejercicios centraliza normalización y retiro; RoutineTemplates encapsula copias reutilizables; Plans centraliza creación, composición, cobertura, activación, estados, duplicación, archivo técnico y finalización automática. Las rutas, controladores, solicitudes y vistas mantienen las convenciones de Laravel.
 
 ## Documentación
 

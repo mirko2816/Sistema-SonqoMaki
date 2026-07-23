@@ -291,6 +291,8 @@ El especialista no debe administrar manualmente los enlaces.
 
 Cada enlace debe pertenecer exclusivamente a un plan y no puede reutilizarse para identificar otro. Solo una operacion tecnica autorizada puede revocarlo o rotarlo por seguridad.
 
+El token completo no se persiste en texto plano. Se guarda un hash SHA-256 para resolver solicitudes públicas, una copia cifrada con la clave de la aplicación para reconstruir la URL en futuros recordatorios y un prefijo no sensible para diagnóstico. “No almacenar el token en texto plano” no significa conservar únicamente el hash, porque el sistema debe poder volver a incluir el mismo enlace vigente en recordatorios posteriores.
+
 ### RF-PUB-002 Acceso sin cuenta
 
 La pagina publica debe permitir que el paciente consulte su rutina sin crear cuenta ni iniciar sesion.

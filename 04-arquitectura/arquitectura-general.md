@@ -130,6 +130,8 @@ Esta separación es lógica y vive dentro del mismo proyecto. No obliga a crear 
 
 El token identifica exclusivamente a un plan, no a una rutina específica, y se genera automáticamente durante su primera activación válida. No vence automáticamente ni puede reasignarse a otro plan. Solo una operación técnica autorizada puede revocarlo o rotarlo por seguridad.
 
+La persistencia combina tres representaciones con propósitos distintos: hash SHA-256 para búsqueda, texto cifrado con la clave de aplicación para reconstruir futuras URLs y prefijo truncado para diagnóstico. El token nunca se persiste en texto plano. Guardar solo el hash no sería compatible con los recordatorios futuros, que deben reutilizar el enlace vigente sin rotarlo.
+
 ### 8.3 Envío programado de recordatorios
 
 ```mermaid
