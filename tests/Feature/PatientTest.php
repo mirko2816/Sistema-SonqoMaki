@@ -188,14 +188,14 @@ it('impone formatos estados y unicidad también mediante restricciones PostgreSQ
         ->toThrow(QueryException::class);
 });
 
-it('muestra el detalle permitido y no inventa planes', function () {
+it('muestra el detalle y el estado vacío real de planes', function () {
     $patient = patient();
 
     $this->actingAs(specialist())->get(route('patients.show', $patient))
         ->assertOk()
         ->assertSee($patient->full_name)
         ->assertSee($patient->whatsapp_phone)
-        ->assertSee('Planes todavía no disponibles')
+        ->assertSee('Paciente sin planes')
         ->assertDontSee('rutina vigente');
 });
 

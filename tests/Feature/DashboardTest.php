@@ -23,7 +23,7 @@ it('permite que el especialista acceda al dashboard con el layout autenticado', 
         ->assertSee($user->email);
 });
 
-it('muestra pacientes y ejercicios disponibles y las secciones futuras sin enlaces falsos', function () {
+it('muestra los módulos disponibles y conserva futuras secciones sin enlaces falsos', function () {
     $response = $this->actingAs(specialist())->get('/dashboard');
 
     $response
@@ -42,12 +42,13 @@ it('muestra pacientes y ejercicios disponibles y las secciones futuras sin enlac
         ->assertDontSee('href="#"', false)
         ->assertSee('href="'.route('patients.index').'"', false)
         ->assertSee('href="'.route('exercises.index').'"', false)
-        ->assertDontSee('href="/planes"', false);
+        ->assertSee('href="'.route('plans.index').'"', false);
 
     expect(app('router')->getRoutes()->getByName('patients.index'))->not->toBeNull();
     expect(app('router')->getRoutes()->getByName('exercises.index'))->not->toBeNull();
 
-    foreach (['routines.index', 'plans.index', 'reminders.index'] as $routeName) {
+    expect(app('router')->getRoutes()->getByName('plans.index'))->not->toBeNull();
+    foreach (['routines.index', 'reminders.index'] as $routeName) {
         expect(app('router')->getRoutes()->getByName($routeName))->toBeNull();
     }
 });
@@ -63,10 +64,10 @@ it('muestra un estado vacío real con la estructura futura de planes activos', f
         ->assertSee('Estado')
         ->assertSee('Recordatorios')
         ->assertSee('Todavía no existen planes activos')
-        ->assertSee('Cuando se incorporen pacientes y se activen sus planes');
+        ->assertSee('Los planes válidos que actives aparecerán aquí');
 });
 
-it('renderiza el dashboard sin consultar tablas de módulos futuros', function () {
+it('consulta planes y pacientes sin consultar módulos de recordatorios futuros', function () {
     $queries = [];
 
     DB::listen(function ($query) use (&$queries) {
@@ -76,10 +77,9 @@ it('renderiza el dashboard sin consultar tablas de módulos futuros', function (
     $this->actingAs(specialist())->get('/dashboard')->assertOk();
 
     expect($queries)
-        ->each(fn ($query) => $query
-            ->not->toContain('patients')
-            ->not->toContain('plans')
-            ->not->toContain('reminders'));
+        ->each(fn ($query) => $query->not->toContain('reminders'));
+    expect(collect($queries)->filter(fn ($query) => str_contains($query, 'plans'))->count())->toBe(1);
+    expect(collect($queries)->filter(fn ($query) => str_contains($query, 'patients'))->count())->toBeLessThanOrEqual(1);
 });
 
 it('mantiene el cierre de sesión seguro desde el dashboard', function () {

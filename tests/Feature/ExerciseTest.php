@@ -291,10 +291,10 @@ it('no elimina mediante GET y una segunda solicitud es idempotente', function ()
     expect(Exercise::withTrashed()->count())->toBe(1);
 });
 
-it('no crea tablas de planes ni rutinas asignadas futuras', function () {
+it('conserva ejercicios junto con las tablas de planes de la nueva etapa', function () {
     expect(Schema::hasTable('exercises'))->toBeTrue()
-        ->and(Schema::hasTable('routines'))->toBeFalse()
-        ->and(Schema::hasTable('routine_exercises'))->toBeFalse()
+        ->and(Schema::hasTable('routines'))->toBeTrue()
+        ->and(Schema::hasTable('routine_exercises'))->toBeTrue()
         ->and(Schema::hasTable('routine_templates'))->toBeTrue()
         ->and(Schema::hasTable('routine_template_exercises'))->toBeTrue();
 });

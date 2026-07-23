@@ -249,8 +249,8 @@ it('protege las escrituras con CSRF', function () {
     $this->delete(route('routine-templates.destroy', $template), ['archive_confirmed' => 1])->assertStatus(419);
 });
 
-it('no introduce planes, fechas, pacientes ni módulos fuera del alcance', function () {
-    expect(DB::getSchemaBuilder()->hasTable('plans'))->toBeFalse()
+it('mantiene la biblioteca independiente aunque ya exista el módulo de planes', function () {
+    expect(DB::getSchemaBuilder()->hasTable('plans'))->toBeTrue()
         ->and(DB::getSchemaBuilder()->hasColumn('routine_templates', 'starts_on'))->toBeFalse()
         ->and(DB::getSchemaBuilder()->hasColumn('routine_templates', 'patient_id'))->toBeFalse();
 });
