@@ -1,0 +1,1 @@
+<x-layouts.authenticated title="Agregar rutina"><x-page-header title="Agregar rutina" :description="'Dentro de '.$plan->name"/><div class="mt-8">@include('plans.routines._form')</div></x-layouts.authenticated>

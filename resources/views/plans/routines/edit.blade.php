@@ -1,0 +1,1 @@
+<x-layouts.authenticated title="Editar rutina"><x-page-header :title="'Editar '.$routine->name" :description="'Configura fechas, ejercicios y orden dentro de '.$plan->name"/><div class="mt-8">@include('plans.routines._form')</div></x-layouts.authenticated>
