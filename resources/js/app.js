@@ -41,7 +41,7 @@ Alpine.data('mobileNavigation', () => ({
 
 Alpine.data('routineTemplateEditor', (searchUrl, initialItems = []) => ({
     query: '', results: [], loading: false, submitting: false,
-    items: initialItems.map((item, index) => ({ ...item, key: `stored-${item.id || index}-${crypto.randomUUID()}` })),
+    items: (Array.isArray(initialItems) ? initialItems : []).map((item, index) => ({ ...item, key: `stored-${item.id || index}-${crypto.randomUUID()}` })),
     init() { this.search(); },
     async search() {
         this.loading = true;

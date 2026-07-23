@@ -2,6 +2,8 @@
 
 use App\Models\Exercise;
 use App\Models\Patient;
+use App\Models\Plan;
+use App\Models\Routine;
 use App\Models\RoutineTemplate;
 use App\Models\User;
 use Tests\TestCase;
@@ -65,4 +67,29 @@ function routineTemplate(array $attributes = [], array $exercises = []): Routine
     }
 
     return $template;
+}
+
+function plan(array $attributes = []): Plan
+{
+    return Plan::create(array_merge([
+        'patient_id' => patient()->id,
+        'name' => 'Plan de prueba',
+        'starts_on' => '2026-08-01',
+        'ends_on' => '2026-08-07',
+        'status' => Plan::STATUS_PAUSED,
+    ], $attributes));
+}
+
+function assignedRoutine(Plan $plan, array $attributes = [], array $exercises = []): Routine
+{
+    $routine = $plan->routines()->create(array_merge([
+        'name' => 'Rutina asignada',
+        'starts_on' => $plan->starts_on,
+        'ends_on' => $plan->ends_on,
+    ], $attributes));
+    foreach ($exercises as $index => $values) {
+        $routine->exercises()->create(array_merge(['position' => $index + 1, 'name' => 'Ejercicio '.($index + 1)], $values));
+    }
+
+    return $routine;
 }
