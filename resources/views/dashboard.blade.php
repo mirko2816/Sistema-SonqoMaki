@@ -1,32 +1,7 @@
 <x-layouts.authenticated title="Dashboard">
-    <x-page-header
-        title="Dashboard"
-        description="Consulta aquí los planes activos y el estado de sus recordatorios."
-    />
-
-    <div class="mt-8">
-        <x-card>
-            <div class="border-b border-slate-200 px-5 py-5 sm:px-6">
-                <h2 class="text-lg font-semibold text-slate-950">Planes activos</h2>
-                <p class="mt-1 text-sm text-slate-600">Cada plan aparecerá en una fila independiente.</p>
-            </div>
-
-            <div class="hidden border-b border-slate-200 bg-slate-50 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 md:grid md:grid-cols-[1.4fr_1fr_1.2fr_0.8fr_1fr] md:gap-4" aria-hidden="true">
-                <span>Paciente</span>
-                <span>Teléfono</span>
-                <span>Plan</span>
-                <span>Estado</span>
-                <span>Recordatorios</span>
-            </div>
-
-            <x-empty-state
-                title="Todavía no existen planes activos"
-                description="Cuando se incorporen pacientes y se activen sus planes, podrás consultar aquí su información y el estado de los recordatorios."
-            />
-        </x-card>
-    </div>
-
-    <p class="mt-5 text-sm leading-6 text-slate-500">
-        Los módulos de pacientes, ejercicios y plantillas de rutina ya están disponibles. Planes y recordatorios se habilitarán en próximas etapas.
-    </p>
+<x-page-header title="Dashboard" description="Consulta los planes activos y el estado real disponible de sus recordatorios."/>
+<div class="mt-8"><x-card><div class="border-b border-slate-200 px-5 py-5 sm:px-6"><h2 class="text-lg font-semibold">Planes activos</h2><p class="mt-1 text-sm text-slate-600">Cada plan se presenta en una fila independiente.</p></div>
+<div class="hidden border-b border-slate-200 bg-slate-50 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 md:grid md:grid-cols-[1.4fr_1fr_1.2fr_0.8fr_1fr] md:gap-4"><span>Paciente</span><span>Teléfono</span><span>Plan</span><span>Estado</span><span>Recordatorios</span></div>
+@forelse($plans as $plan)<a href="{{ route('plans.show',$plan) }}" class="grid gap-2 border-b border-slate-100 px-5 py-4 text-sm last:border-0 hover:bg-slate-50 md:grid-cols-[1.4fr_1fr_1.2fr_0.8fr_1fr] md:items-center md:gap-4"><span><span class="font-semibold md:hidden">Paciente: </span>{{ $plan->patient->full_name }}</span><span><span class="font-semibold md:hidden">Teléfono: </span>{{ $plan->patient->whatsapp_phone }}</span><span class="font-semibold">{{ $plan->name }}</span><span><span class="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800">Activo</span></span><span class="text-slate-600">Sin configurar</span></a>@empty<x-empty-state title="Todavía no existen planes activos" description="Los planes válidos que actives aparecerán aquí."/>@endforelse
+</x-card></div><p class="mt-5 text-sm text-slate-500">Los recordatorios aún no forman parte de esta etapa; el estado mostrado no presupone configuración inexistente.</p>
 </x-layouts.authenticated>

@@ -6,7 +6,7 @@
         ['label' => 'Pacientes', 'icon' => 'users', 'route' => 'patients.index', 'pattern' => 'patients.*'],
         ['label' => 'Ejercicios', 'icon' => 'activity', 'route' => 'exercises.index', 'pattern' => 'exercises.*'],
         ['label' => 'Rutinas', 'icon' => 'clipboard', 'route' => 'routine-templates.index', 'pattern' => 'routine-templates.*'],
-        ['label' => 'Planes', 'icon' => 'calendar'],
+        ['label' => 'Planes', 'icon' => 'calendar', 'route' => 'plans.index', 'pattern' => 'plans.*'],
         ['label' => 'Recordatorios', 'icon' => 'bell'],
         ['label' => 'Historial de envíos', 'icon' => 'history'],
     ];
