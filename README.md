@@ -4,7 +4,7 @@ Aplicación web para registrar pacientes, preparar planes con rutinas, enviar re
 
 ## Estado
 
-La base técnica del MVP está inicializada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. Esta iteración no incluye autenticación ni funcionalidades del negocio.
+La base técnica del MVP está inicializada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. Están disponibles la autenticación, pacientes, biblioteca de ejercicios, plantillas reutilizables, planes asignados y la página pública segura de la rutina vigente. Los recordatorios y WhatsApp se incorporarán en iteraciones posteriores.
 
 ## Decisiones principales del MVP
 
@@ -74,11 +74,31 @@ Para comprobar la conexión:
 php artisan db:show --database=pgsql
 ```
 
-Las migraciones del modelo funcional se incorporarán en iteraciones posteriores. Cuando existan, se ejecutarán con:
+Ejecuta las migraciones con:
 
 ```bash
 composer run migrate
 ```
+
+La migración de planes habilita la extensión PostgreSQL `btree_gist` para impedir en la propia base de datos que dos rutinas no archivadas del mismo plan se superpongan. El usuario de migraciones debe poder ejecutar `CREATE EXTENSION IF NOT EXISTS btree_gist`.
+
+Las sesiones se almacenan en PostgreSQL mediante `SESSION_DRIVER=database`. En un entorno HTTPS configura además `SESSION_SECURE_COOKIE=true`; las cookies ya se restringen a HTTP y usan `SameSite=lax` por defecto.
+
+## Crear la cuenta inicial del especialista
+
+No existe registro público. Después de ejecutar las migraciones, crea la cuenta desde una terminal:
+
+```bash
+php artisan specialist:create
+```
+
+El comando solicita el correo y pide dos veces una contraseña oculta de al menos 12 caracteres. También puedes proporcionar únicamente el correo como argumento:
+
+```bash
+php artisan specialist:create especialista@ejemplo.com
+```
+
+No pases la contraseña como argumento ni la escribas en archivos de configuración. El comando normaliza el correo, genera el hash con la configuración segura de Laravel y rechaza cuentas duplicadas, incluso si cambia el uso de mayúsculas.
 
 ## Ejecución
 
@@ -96,6 +116,14 @@ npm run dev
 
 La aplicación estará disponible normalmente en `http://127.0.0.1:8000`.
 
+Después de iniciar sesión en `/iniciar-sesion`, el especialista es dirigido a `/dashboard`. Pacientes está en `/pacientes`, ejercicios en `/ejercicios`, plantillas en `/rutinas` y planes asignados en `/planes`. Desde un plan se configuran rutinas manuales o copiadas, ejercicios y orden; también se valida su activación, se cambia de estado y se duplica. El dashboard muestra una fila por plan activo y declara honestamente los recordatorios como “Sin configurar”.
+
+La primera activación crea un token de al menos 32 bytes aleatorios. PostgreSQL guarda su hash SHA-256 para resolución, una copia cifrada con `APP_KEY` para construir futuros recordatorios y un prefijo no sensible para diagnóstico; nunca guarda ni registra el token en texto plano. La página pública usa la ruta estable `/mi-rutina/{token}`, no requiere sesión y siempre vuelve a evaluar el plan y la rutina vigente con la fecha de `America/Lima`.
+
+`APP_URL` debe contener la base pública real de cada entorno. Para pruebas desde otro dispositivo, configura allí la URL HTTPS estable del túnel antes de activar planes o componer enlaces; no codifiques el dominio en el código. La página pública evita indexación, referencias salientes y caché persistente, pero el servidor o proveedor del túnel también debe evitar registrar la ruta completa porque esta contiene el token secreto.
+
+La finalización automática puede ejecutarse manualmente con `php artisan plans:finish-expired`. El scheduler la programa diariamente a las 00:05 en `America/Lima`; en operación continua debe mantenerse activo `php artisan schedule:work` o un cron equivalente.
+
 ## Recursos frontend
 
 ```bash
@@ -103,6 +131,8 @@ npm run build
 ```
 
 Blade renderiza la interfaz en el servidor. Alpine.js queda reservado para interacciones puntuales y Tailwind CSS se compila mediante Vite.
+
+Para verificar la interfaz, inicia Laravel y Vite, accede con la cuenta del especialista y comprueba el dashboard tanto en celular como en escritorio. En celular, el botón de menú abre la navegación lateral; puede cerrarse con su botón, tocando fuera o con la tecla `Escape`.
 
 ## Pruebas
 
@@ -114,11 +144,11 @@ php artisan key:generate --env=testing
 composer test
 ```
 
-La prueba inicial de la portada no escribe en la base de datos. Las futuras pruebas de integridad deberán ejecutarse contra `sonqo_maki_test`, nunca contra la base de desarrollo.
+Las pruebas de autenticación y restricciones se ejecutan contra PostgreSQL real en `sonqo_maki_test`, nunca contra la base de desarrollo.
 
 ## Organización modular
 
-Los futuros módulos funcionales vivirán bajo `app/Modules` y se añadirán uno por uno. Rutas, controladores, solicitudes y vistas mantienen las convenciones de Laravel; los módulos agrupan únicamente casos de uso, reglas y adaptadores cuando exista una necesidad concreta. Esto conserva el monolito modular sin introducir capas genéricas prematuras.
+Los módulos funcionales viven bajo `app/Modules`. Pacientes incluye creación, edición, estado y archivo; Ejercicios centraliza normalización y retiro; RoutineTemplates encapsula copias reutilizables; Plans centraliza creación, composición, cobertura, activación, estados, duplicación, archivo técnico y finalización automática; PublicPortal separa resolución por hash, decisión de contenido y composición autorizada de la URL. Las rutas, controladores, solicitudes y vistas mantienen las convenciones de Laravel.
 
 ## Documentación
 

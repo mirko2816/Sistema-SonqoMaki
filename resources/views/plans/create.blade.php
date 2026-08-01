@@ -1,0 +1,1 @@
+<x-layouts.authenticated title="Nuevo plan"><x-page-header title="Nuevo plan" description="Crea el contenedor y configura después sus rutinas sin perder avances."/><div class="mt-8 max-w-3xl">@include('plans._form')</div></x-layouts.authenticated>

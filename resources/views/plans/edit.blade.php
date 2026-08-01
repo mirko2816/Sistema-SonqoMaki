@@ -1,0 +1,1 @@
+<x-layouts.authenticated title="Editar plan"><x-page-header title="Editar plan" description="Los cambios no pueden dejar rutinas fuera del nuevo rango."/><div class="mt-8 max-w-3xl">@error('plan')<x-alert type="error" class="mb-6">{{ $message }}</x-alert>@enderror @include('plans._form')</div></x-layouts.authenticated>
