@@ -33,6 +33,7 @@ class RoutineExercise extends Model
     {
         return Attribute::get(fn (): string => ExerciseData::formatDuration($this->duration_seconds));
     }
+<<<<<<< HEAD
 
     protected function publicMaterialUrl(): Attribute
     {
@@ -46,4 +47,6 @@ class RoutineExercise extends Model
                 : null;
         });
     }
+=======
+>>>>>>> b7a4b3f38c1eb8ffe609e03c7537ee3de469fa80
 }

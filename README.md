@@ -4,7 +4,7 @@ Aplicación web para registrar pacientes, preparar planes con rutinas, enviar re
 
 ## Estado
 
-La base técnica del MVP está inicializada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. Están disponibles la autenticación, pacientes, biblioteca de ejercicios, plantillas reutilizables, planes asignados y la página pública segura de la rutina vigente. Los recordatorios y WhatsApp se incorporarán en iteraciones posteriores.
+La base técnica del MVP está inicializada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. Están disponibles la autenticación, pacientes, biblioteca de ejercicios, plantillas reutilizables y planes asignados con rutinas, ejercicios, estados, duplicación y enlace seguro preparado. La página pública, los recordatorios y WhatsApp se incorporarán en iteraciones posteriores.
 
 ## Decisiones principales del MVP
 
@@ -148,7 +148,7 @@ Las pruebas de autenticación y restricciones se ejecutan contra PostgreSQL real
 
 ## Organización modular
 
-Los módulos funcionales viven bajo `app/Modules`. Pacientes incluye creación, edición, estado y archivo; Ejercicios centraliza normalización y retiro; RoutineTemplates encapsula copias reutilizables; Plans centraliza creación, composición, cobertura, activación, estados, duplicación, archivo técnico y finalización automática; PublicPortal separa resolución por hash, decisión de contenido y composición autorizada de la URL. Las rutas, controladores, solicitudes y vistas mantienen las convenciones de Laravel.
+Los módulos funcionales viven bajo `app/Modules`. Pacientes incluye creación, edición, estado y archivo; Ejercicios centraliza normalización y retiro; RoutineTemplates encapsula copias reutilizables; Plans centraliza creación, composición, cobertura, activación, estados, duplicación, archivo técnico y finalización automática. Las rutas, controladores, solicitudes y vistas mantienen las convenciones de Laravel.
 
 ## Documentación
 
