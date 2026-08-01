@@ -31,3 +31,5 @@ pnpm-debug.log*
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+/graphify-out

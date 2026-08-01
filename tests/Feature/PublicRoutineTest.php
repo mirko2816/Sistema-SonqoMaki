@@ -369,7 +369,8 @@ it('aplica encabezados de seguridad y no expone el token en HTML o JavaScript', 
         ->assertHeader('Content-Security-Policy');
 
     expect($response->getContent())->not->toContain($token)
-        ->and($response->getContent())->not->toContain('<script');
+        ->and($response->getContent())->not->toContain('<script')
+        ->and($response->getContent())->toMatch('/<link rel="stylesheet" href="[^"]*\/build\/assets\/[^"]+\.css">/');
 });
 
 it('convierte fallos internos en el estado genérico sin mostrar trazas ni el token', function () {

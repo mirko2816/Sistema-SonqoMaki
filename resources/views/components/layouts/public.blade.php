@@ -1,5 +1,10 @@
 @props(['title'])
 
+@php
+    $publicAssets = (clone app(\Illuminate\Foundation\Vite::class))
+        ->useHotFile(storage_path('framework/vite-public.hot'));
+@endphp
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -11,7 +16,7 @@
 
         <title>{{ $title }} · {{ config('app.name') }}</title>
 
-        @vite('resources/css/app.css')
+        <link rel="stylesheet" href="{{ $publicAssets->asset('resources/css/app.css') }}">
     </head>
     <body class="min-h-screen overflow-x-hidden bg-[#f5faf8] text-slate-900 antialiased">
         <a href="#contenido-principal" class="fixed left-4 top-4 z-50 -translate-y-24 rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white focus:translate-y-0">
