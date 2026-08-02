@@ -178,7 +178,7 @@ it('muestra una fila por plan activo y excluye vencidos y pacientes archivados',
     $archivedPatient = patient();
     plan(['patient_id' => $archivedPatient->id, 'name' => 'Oculto', 'status' => Plan::STATUS_ACTIVE]);
     $archivedPatient->delete();
-    $this->actingAs(specialist())->get(route('dashboard'))->assertSee('Activo uno')->assertSee('Activo dos')->assertDontSee('Vencido')->assertDontSee('Oculto')->assertSee('Sin configurar');
+    $this->actingAs(specialist())->get(route('dashboard'))->assertSee('Activo uno')->assertSee('Activo dos')->assertDontSee('Vencido')->assertDontSee('Oculto')->assertSee('Sin horarios');
 });
 
 it('protege escrituras de planes con CSRF', function () {

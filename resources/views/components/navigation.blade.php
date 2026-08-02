@@ -7,7 +7,7 @@
         ['label' => 'Ejercicios', 'icon' => 'activity', 'route' => 'exercises.index', 'pattern' => 'exercises.*'],
         ['label' => 'Rutinas', 'icon' => 'clipboard', 'route' => 'routine-templates.index', 'pattern' => 'routine-templates.*'],
         ['label' => 'Planes', 'icon' => 'calendar', 'route' => 'plans.index', 'pattern' => 'plans.*'],
-        ['label' => 'Recordatorios', 'icon' => 'bell'],
+        ['label' => 'Recordatorios', 'icon' => 'bell', 'route' => 'reminders.index', 'pattern' => 'reminders.*'],
         ['label' => 'Historial de envíos', 'icon' => 'history'],
     ];
 @endphp

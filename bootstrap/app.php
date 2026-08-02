@@ -2,6 +2,7 @@
 
 use App\Console\Commands\CreateSpecialistCommand;
 use App\Console\Commands\FinishExpiredPlansCommand;
+use App\Console\Commands\ProcessDueRemindersCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -11,9 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withCommands([
         CreateSpecialistCommand::class,
         FinishExpiredPlansCommand::class,
+        ProcessDueRemindersCommand::class,
     ])
     ->withSchedule(function (Schedule $schedule): void {
         $schedule->command('plans:finish-expired')->dailyAt('00:05')->timezone('America/Lima')->withoutOverlapping();
+        $schedule->command('reminders:process-due')->everyMinute()->timezone('America/Lima')->withoutOverlapping(2);
     })
     ->withRouting(
         web: __DIR__.'/../routes/web.php',

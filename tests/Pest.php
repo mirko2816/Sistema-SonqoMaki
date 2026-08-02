@@ -71,13 +71,16 @@ function routineTemplate(array $attributes = [], array $exercises = []): Routine
 
 function plan(array $attributes = []): Plan
 {
-    return Plan::create(array_merge([
+    $plan = Plan::create(array_merge([
         'patient_id' => patient()->id,
         'name' => 'Plan de prueba',
         'starts_on' => '2026-08-01',
         'ends_on' => '2026-08-07',
         'status' => Plan::STATUS_PAUSED,
     ], $attributes));
+    $plan->reminderConfiguration()->create(['is_active' => false]);
+
+    return $plan;
 }
 
 function assignedRoutine(Plan $plan, array $attributes = [], array $exercises = []): Routine

@@ -4,7 +4,7 @@ Aplicación web para registrar pacientes, preparar planes con rutinas, enviar re
 
 ## Estado
 
-La base técnica del MVP está inicializada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. Están disponibles la autenticación, pacientes, biblioteca de ejercicios, plantillas reutilizables y planes asignados con rutinas, ejercicios, estados, duplicación y enlace seguro preparado. La página pública, los recordatorios y WhatsApp se incorporarán en iteraciones posteriores.
+La base técnica del MVP está inicializada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. Están disponibles la autenticación, pacientes, biblioteca de ejercicios, plantillas reutilizables, planes asignados, página pública mediante enlace seguro, configuración de recordatorios por plan y ejecución programada mediante WhatsApp Cloud API. La interfaz del historial técnico se incorporará en una iteración posterior.
 
 ## Decisiones principales del MVP
 
@@ -116,13 +116,21 @@ npm run dev
 
 La aplicación estará disponible normalmente en `http://127.0.0.1:8000`.
 
-Después de iniciar sesión en `/iniciar-sesion`, el especialista es dirigido a `/dashboard`. Pacientes está en `/pacientes`, ejercicios en `/ejercicios`, plantillas en `/rutinas` y planes asignados en `/planes`. Desde un plan se configuran rutinas manuales o copiadas, ejercicios y orden; también se valida su activación, se cambia de estado y se duplica. El dashboard muestra una fila por plan activo y declara honestamente los recordatorios como “Sin configurar”.
+Después de iniciar sesión en `/iniciar-sesion`, el especialista es dirigido a `/dashboard`. Pacientes está en `/pacientes`, ejercicios en `/ejercicios`, plantillas en `/rutinas`, planes asignados en `/planes` y la vista general de recordatorios en `/recordatorios`. Desde un plan se configuran rutinas, ejercicios y hasta dos horarios distintos por día en la zona fija `America/Lima`; la programación puede activarse o pausarse sin cambiar el estado del plan. El dashboard distingue planes sin horarios, con recordatorios configurados en pausa y con recordatorios activos.
 
 La primera activación crea un token de al menos 32 bytes aleatorios. PostgreSQL guarda su hash SHA-256 para resolución, una copia cifrada con `APP_KEY` para construir futuros recordatorios y un prefijo no sensible para diagnóstico; nunca guarda ni registra el token en texto plano. La página pública usa la ruta estable `/mi-rutina/{token}`, no requiere sesión y siempre vuelve a evaluar el plan y la rutina vigente con la fecha de `America/Lima`.
 
 `APP_URL` debe contener la base pública real de cada entorno. Para pruebas desde otro dispositivo, configura allí la URL HTTPS estable del túnel antes de activar planes o componer enlaces; no codifiques el dominio en el código. La página pública evita indexación, referencias salientes y caché persistente, pero el servidor o proveedor del túnel también debe evitar registrar la ruta completa porque esta contiene el token secreto.
 
-La finalización automática puede ejecutarse manualmente con `php artisan plans:finish-expired`. El scheduler la programa diariamente a las 00:05 en `America/Lima`; en operación continua debe mantenerse activo `php artisan schedule:work` o un cron equivalente.
+La finalización automática puede ejecutarse manualmente con `php artisan plans:finish-expired`. El scheduler la programa diariamente a las 00:05 en `America/Lima`. El motor de recordatorios se ejecuta cada minuto y puede diagnosticarse manualmente con `php artisan reminders:process-due`.
+
+En operación continua debe mantenerse activo el scheduler en una terminal independiente:
+
+```bash
+php artisan schedule:work
+```
+
+El comando manual evalúa únicamente el minuto actual: no recupera horarios anteriores ni genera ejecuciones retroactivas. Cada combinación de plan, fecha local y hora se adquiere una sola vez; por eso no debe ejecutarse como simulación sobre datos reales si todavía no se desea consumir esa ejecución.
 
 ## Recursos frontend
 
@@ -146,9 +154,48 @@ composer test
 
 Las pruebas de autenticación y restricciones se ejecutan contra PostgreSQL real en `sonqo_maki_test`, nunca contra la base de desarrollo.
 
+## Configuración y ejecución de recordatorios
+
+Cada plan tiene una configuración propia e inicialmente inactiva. La migración crea configuraciones para los planes existentes y los flujos de creación y duplicación mantienen el mismo invariante para planes nuevos. Los horarios usan días ISO-8601 (`1` lunes a `7` domingo), borrado lógico y restricciones PostgreSQL contra días inválidos y duplicados activos.
+
+El guardado se realiza en una transacción que bloquea la configuración, valida la programación completa, limita cada día a dos horarios y sincroniza altas, restauraciones y retiros. Archivar un paciente o un plan desactiva sus recordatorios sin borrar los horarios.
+
+El scheduler localiza únicamente horarios no eliminados que coinciden con el día ISO y minuto actual en `America/Lima`. Antes de llamar al proveedor vuelve a comprobar paciente, teléfono, consentimiento, plan, rango de fechas, configuración, cobertura de rutinas, rutina vigente con ejercicios y enlace público recuperable. Las omisiones quedan registradas sin contactar a WhatsApp.
+
+### WhatsApp Cloud API
+
+Configura en `.env` una plantilla previamente aprobada por Meta cuyo cuerpo tenga dos parámetros de texto, en este orden: nombre del paciente y URL segura del plan. El texto representado por la plantilla debe ser:
+
+```text
+Hola {{1}}. Tu salud es importante. Recuerda realizar tu rutina de hoy: {{2}}.
+```
+
+Variables necesarias:
+
+```dotenv
+WHATSAPP_ACCESS_TOKEN=
+WHATSAPP_PHONE_NUMBER_ID=
+WHATSAPP_GRAPH_VERSION=v23.0
+WHATSAPP_TEMPLATE_NAME=sonqo_maki_daily_reminder
+WHATSAPP_TEMPLATE_LANGUAGE=es_PE
+WHATSAPP_CONNECT_TIMEOUT=5
+WHATSAPP_TIMEOUT=10
+```
+
+El token y el identificador reales solo deben existir en el `.env` no versionado. El adaptador envía una plantilla al endpoint `/{phone-number-id}/messages` de Graph API conforme al contrato oficial de [WhatsApp Cloud API mantenido por Meta](https://www.postman.com/meta/whatsapp-business-platform/documentation/wlk6lh4/whatsapp-cloud-api). La versión, el nombre y el idioma deben coincidir con la cuenta y la plantilla aprobada del entorno.
+
+Las ejecuciones tienen estos resultados técnicos:
+
+- `processing`: la instancia adquirió atómicamente el derecho a procesar; si una caída la deja así, no se reanuda automáticamente.
+- `omitted`: una regla interna evitó contactar a WhatsApp.
+- `accepted`: Meta aceptó inmediatamente la solicitud y devolvió un identificador. No significa entregado, leído ni realizado.
+- `failed`: el proveedor rechazó o no respondió correctamente, o ocurrió un fallo interno.
+
+No existen reintentos automáticos, webhooks ni confirmación posterior de entrega o lectura en esta etapa. La URL completa se envía necesariamente a Meta, pero el historial solo conserva la referencia al enlace; no almacena el token público. La consulta visual del historial (`CU-ENV-001`) todavía no está implementada.
+
 ## Organización modular
 
-Los módulos funcionales viven bajo `app/Modules`. Pacientes incluye creación, edición, estado y archivo; Ejercicios centraliza normalización y retiro; RoutineTemplates encapsula copias reutilizables; Plans centraliza creación, composición, cobertura, activación, estados, duplicación, archivo técnico y finalización automática. Las rutas, controladores, solicitudes y vistas mantienen las convenciones de Laravel.
+Los módulos funcionales viven bajo `app/Modules`. Pacientes incluye creación, edición, estado y archivo; Ejercicios centraliza normalización y retiro; RoutineTemplates encapsula copias reutilizables; Plans centraliza creación, composición, cobertura, activación, estados, duplicación, archivo técnico y finalización automática; Reminders centraliza la programación, adquisición idempotente, evaluación y ejecución; su adaptador de infraestructura aísla WhatsApp Cloud API. Las rutas, controladores, solicitudes y vistas mantienen las convenciones de Laravel.
 
 ## Documentación
 

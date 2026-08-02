@@ -7,6 +7,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\PlanRoutineController;
 use App\Http\Controllers\PublicRoutineController;
+use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\RoutineTemplateController;
 use App\Http\Middleware\AddPublicRoutineSecurityHeaders;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
@@ -36,6 +37,9 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/recordatorios', [ReminderController::class, 'index'])->name('reminders.index');
+    Route::get('/planes/{plan}/recordatorios', [ReminderController::class, 'edit'])->name('reminders.edit');
+    Route::put('/planes/{plan}/recordatorios', [ReminderController::class, 'update'])->name('reminders.update');
     Route::get('/pacientes/archivados', [PatientController::class, 'archived'])->name('patients.archived');
     Route::patch('/pacientes/{patient}/estado', [PatientController::class, 'changeStatus'])->name('patients.status');
     Route::resource('/pacientes', PatientController::class)

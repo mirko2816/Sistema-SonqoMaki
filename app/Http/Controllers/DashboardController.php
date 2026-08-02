@@ -13,7 +13,10 @@ class DashboardController extends Controller
         $today = CarbonImmutable::now('America/Lima')->toDateString();
         $plans = Plan::query()->where('status', Plan::STATUS_ACTIVE)->whereDate('ends_on', '>=', $today)
             ->whereHas('patient', fn ($query) => $query->whereNull('patients.deleted_at'))
-            ->with('patient:id,first_names,last_names,whatsapp_phone')->orderBy('starts_on')->orderBy('id')->get();
+            ->with([
+                'patient:id,first_names,last_names,whatsapp_phone',
+                'reminderConfiguration' => fn ($query) => $query->withCount('schedules'),
+            ])->orderBy('starts_on')->orderBy('id')->get();
 
         return view('dashboard', compact('plans'));
     }

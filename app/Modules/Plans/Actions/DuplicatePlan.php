@@ -18,6 +18,7 @@ class DuplicatePlan
                 throw ValidationException::withMessages(['patient_id' => 'Selecciona un paciente activo y no archivado.']);
             }
             $copy = Plan::create(['patient_id' => $patient->id, 'name' => $data['name'], 'starts_on' => $origin->starts_on, 'ends_on' => $origin->ends_on, 'status' => Plan::STATUS_PAUSED]);
+            $copy->reminderConfiguration()->create(['is_active' => false]);
             foreach ($origin->routines()->with('exercises')->get() as $routine) {
                 $routineCopy = $copy->routines()->create($routine->only(['name', 'starts_on', 'ends_on']));
                 foreach ($routine->exercises as $exercise) {

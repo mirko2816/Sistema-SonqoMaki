@@ -48,9 +48,8 @@ it('muestra los módulos disponibles y conserva futuras secciones sin enlaces fa
     expect(app('router')->getRoutes()->getByName('exercises.index'))->not->toBeNull();
 
     expect(app('router')->getRoutes()->getByName('plans.index'))->not->toBeNull();
-    foreach (['routines.index', 'reminders.index'] as $routeName) {
-        expect(app('router')->getRoutes()->getByName($routeName))->toBeNull();
-    }
+    expect(app('router')->getRoutes()->getByName('reminders.index'))->not->toBeNull();
+    expect(app('router')->getRoutes()->getByName('routines.index'))->toBeNull();
 });
 
 it('muestra un estado vacío real con la estructura futura de planes activos', function () {
@@ -67,7 +66,7 @@ it('muestra un estado vacío real con la estructura futura de planes activos', f
         ->assertSee('Los planes válidos que actives aparecerán aquí');
 });
 
-it('consulta planes y pacientes sin consultar módulos de recordatorios futuros', function () {
+it('consulta planes, pacientes y recordatorios sin consultas por cada fila', function () {
     $queries = [];
 
     DB::listen(function ($query) use (&$queries) {
@@ -76,10 +75,9 @@ it('consulta planes y pacientes sin consultar módulos de recordatorios futuros'
 
     $this->actingAs(specialist())->get('/dashboard')->assertOk();
 
-    expect($queries)
-        ->each(fn ($query) => $query->not->toContain('reminders'));
     expect(collect($queries)->filter(fn ($query) => str_contains($query, 'plans'))->count())->toBe(1);
     expect(collect($queries)->filter(fn ($query) => str_contains($query, 'patients'))->count())->toBeLessThanOrEqual(1);
+    expect(collect($queries)->filter(fn ($query) => str_contains($query, 'reminder_configurations'))->count())->toBeLessThanOrEqual(1);
 });
 
 it('mantiene el cierre de sesión seguro desde el dashboard', function () {

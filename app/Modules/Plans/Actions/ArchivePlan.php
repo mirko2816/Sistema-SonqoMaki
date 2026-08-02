@@ -12,6 +12,7 @@ class ArchivePlan
         DB::transaction(function () use ($plan): void {
             $locked = Plan::query()->lockForUpdate()->findOrFail($plan->id);
             $locked->update(['status' => Plan::STATUS_PAUSED]);
+            $locked->reminderConfiguration()->update(['is_active' => false]);
             $locked->publicLinks()->whereNull('revoked_at')->update(['revoked_at' => now(), 'updated_at' => now()]);
             $locked->delete();
         });

@@ -47,7 +47,7 @@ class PlanController extends Controller
 
     public function show(Plan $plan, PlanActivationValidator $validator): View
     {
-        $plan->load(['patient', 'routines.exercises', 'currentPublicLink']);
+        $plan->load(['patient', 'routines.exercises', 'currentPublicLink', 'reminderConfiguration' => fn ($query) => $query->withCount('schedules')]);
         $problems = $validator->problems($plan);
         $today = CarbonImmutable::now('America/Lima')->startOfDay();
         $currentRoutine = $plan->routines->first(fn ($routine) => $routine->starts_on->lte($today) && $routine->ends_on->gte($today));

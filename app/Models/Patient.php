@@ -41,4 +41,9 @@ class Patient extends Model
     {
         return $this->hasMany(Plan::class)->orderByDesc('starts_on')->orderByDesc('id');
     }
+
+    public function reminderExecutions(): HasMany
+    {
+        return $this->hasMany(ReminderExecution::class);
+    }
 }

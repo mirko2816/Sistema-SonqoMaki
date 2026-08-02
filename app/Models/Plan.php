@@ -44,4 +44,14 @@ class Plan extends Model
     {
         return $this->hasOne(PublicLink::class)->whereNull('revoked_at');
     }
+
+    public function reminderConfiguration(): HasOne
+    {
+        return $this->hasOne(ReminderConfiguration::class);
+    }
+
+    public function reminderExecutions(): HasMany
+    {
+        return $this->hasMany(ReminderExecution::class);
+    }
 }

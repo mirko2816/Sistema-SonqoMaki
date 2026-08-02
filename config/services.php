@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    'whatsapp' => [
+        'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+        'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v23.0'),
+        'template_name' => env('WHATSAPP_TEMPLATE_NAME', 'sonqo_maki_daily_reminder'),
+        'template_language' => env('WHATSAPP_TEMPLATE_LANGUAGE', 'es_PE'),
+        'connect_timeout' => (int) env('WHATSAPP_CONNECT_TIMEOUT', 5),
+        'timeout' => (int) env('WHATSAPP_TIMEOUT', 10),
+    ],
+
 ];

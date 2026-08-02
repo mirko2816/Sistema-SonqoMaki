@@ -18,6 +18,7 @@ class ArchivePatient
                 if ($plan->status !== Plan::STATUS_FINISHED) {
                     $plan->update(['status' => Plan::STATUS_PAUSED]);
                 }
+                $plan->reminderConfiguration()->update(['is_active' => false]);
                 $plan->publicLinks()->whereNull('revoked_at')->update(['revoked_at' => now(), 'updated_at' => now()]);
             }
 

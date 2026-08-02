@@ -17,7 +17,10 @@ class CreatePlan
                 throw ValidationException::withMessages(['patient_id' => 'Selecciona un paciente activo y no archivado.']);
             }
 
-            return Plan::create([...$data, 'status' => Plan::STATUS_PAUSED]);
+            $plan = Plan::create([...$data, 'status' => Plan::STATUS_PAUSED]);
+            $plan->reminderConfiguration()->create(['is_active' => false]);
+
+            return $plan;
         });
     }
 }
