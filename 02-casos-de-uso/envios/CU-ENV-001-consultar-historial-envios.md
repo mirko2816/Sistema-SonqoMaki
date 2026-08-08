@@ -1,5 +1,7 @@
 # CU-ENV-001 - Consultar historial tecnico de recordatorios
 
+**Estado de implementación:** implementado en el MVP mediante un listado autenticado con filtros, paginación y vista de detalle de solo lectura.
+
 ## Objetivo
 
 Permitir que el especialista compruebe si cada ejecucion programada fue omitida o si la solicitud fue aceptada o fallo tecnicamente.

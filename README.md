@@ -4,7 +4,7 @@ Aplicación web para registrar pacientes, preparar planes con rutinas, enviar re
 
 ## Estado
 
-La base técnica del MVP está inicializada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. Están disponibles la autenticación, pacientes, biblioteca de ejercicios, plantillas reutilizables, planes asignados, página pública mediante enlace seguro, configuración de recordatorios por plan y ejecución programada mediante WhatsApp Cloud API. La interfaz del historial técnico se incorporará en una iteración posterior.
+La base técnica del MVP está implementada con Laravel 12, Blade, Alpine.js, Tailwind CSS, PostgreSQL y Pest. Están disponibles la autenticación, pacientes, biblioteca de ejercicios, plantillas reutilizables, planes asignados, página pública mediante enlace seguro, configuración y ejecución programada de recordatorios mediante WhatsApp Cloud API, y el historial técnico autenticado con filtros y detalle de cada ejecución.
 
 ## Decisiones principales del MVP
 
@@ -191,7 +191,7 @@ Las ejecuciones tienen estos resultados técnicos:
 - `accepted`: Meta aceptó inmediatamente la solicitud y devolvió un identificador. No significa entregado, leído ni realizado.
 - `failed`: el proveedor rechazó o no respondió correctamente, o ocurrió un fallo interno.
 
-No existen reintentos automáticos, webhooks ni confirmación posterior de entrega o lectura en esta etapa. La URL completa se envía necesariamente a Meta, pero el historial solo conserva la referencia al enlace; no almacena el token público. La consulta visual del historial (`CU-ENV-001`) todavía no está implementada.
+No existen reintentos automáticos, webhooks ni confirmación posterior de entrega o lectura en esta etapa. La URL completa se envía necesariamente a Meta, pero el historial solo conserva la referencia al enlace; no almacena el token público. La consulta visual autenticada del historial (`CU-ENV-001`) muestra los snapshots históricos y el resultado técnico inmediato sin exponer credenciales ni datos del enlace público.
 
 ## Organización modular
 

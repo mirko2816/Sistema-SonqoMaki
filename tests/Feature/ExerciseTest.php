@@ -39,13 +39,13 @@ it('protege todas las pantallas y escrituras de ejercicios con autenticación', 
     }
 });
 
-it('permite acceder y marca ejercicios como navegación activa sin romper secciones pendientes', function () {
+it('permite acceder y marca ejercicios como navegación activa con acceso al historial', function () {
     $this->actingAs(specialist())->get(route('exercises.index'))
         ->assertOk()
         ->assertSee('Biblioteca de ejercicios')
         ->assertSee('aria-current="page"', false)
         ->assertSee('Rutinas')
-        ->assertSee('Próximamente');
+        ->assertSee('href="'.route('reminder-executions.index').'"', false);
 });
 
 it('muestra estados vacío y sin resultados diferentes', function () {

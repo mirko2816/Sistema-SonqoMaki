@@ -1,5 +1,7 @@
 <x-layouts.authenticated title="Recordatorios">
-    <x-page-header title="Recordatorios" description="Consulta y configura los horarios de cada plan de forma independiente." />
+    <x-page-header title="Recordatorios" description="Consulta y configura los horarios de cada plan de forma independiente.">
+        <x-slot:actions><a href="{{ route('reminder-executions.index') }}" class="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-100">Ver historial técnico</a></x-slot:actions>
+    </x-page-header>
 
     <x-alert class="mt-6">
         Todos los horarios usan la zona fija <strong>America/Lima</strong>. Configurarlos o pausarlos no cambia el estado del plan.

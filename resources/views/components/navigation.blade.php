@@ -8,7 +8,7 @@
         ['label' => 'Rutinas', 'icon' => 'clipboard', 'route' => 'routine-templates.index', 'pattern' => 'routine-templates.*'],
         ['label' => 'Planes', 'icon' => 'calendar', 'route' => 'plans.index', 'pattern' => 'plans.*'],
         ['label' => 'Recordatorios', 'icon' => 'bell', 'route' => 'reminders.index', 'pattern' => 'reminders.*'],
-        ['label' => 'Historial de envíos', 'icon' => 'history'],
+        ['label' => 'Historial técnico', 'icon' => 'history', 'route' => 'reminder-executions.index', 'pattern' => 'reminder-executions.*'],
     ];
 @endphp
 

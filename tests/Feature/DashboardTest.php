@@ -23,7 +23,7 @@ it('permite que el especialista acceda al dashboard con el layout autenticado', 
         ->assertSee($user->email);
 });
 
-it('muestra los módulos disponibles y conserva futuras secciones sin enlaces falsos', function () {
+it('muestra todos los módulos disponibles con enlaces reales', function () {
     $response = $this->actingAs(specialist())->get('/dashboard');
 
     $response
@@ -36,19 +36,20 @@ it('muestra los módulos disponibles y conserva futuras secciones sin enlaces fa
             'Rutinas',
             'Planes',
             'Recordatorios',
-            'Historial de envíos',
+            'Historial técnico',
         ])
-        ->assertSee('Próximamente')
         ->assertDontSee('href="#"', false)
         ->assertSee('href="'.route('patients.index').'"', false)
         ->assertSee('href="'.route('exercises.index').'"', false)
-        ->assertSee('href="'.route('plans.index').'"', false);
+        ->assertSee('href="'.route('plans.index').'"', false)
+        ->assertSee('href="'.route('reminder-executions.index').'"', false);
 
     expect(app('router')->getRoutes()->getByName('patients.index'))->not->toBeNull();
     expect(app('router')->getRoutes()->getByName('exercises.index'))->not->toBeNull();
 
     expect(app('router')->getRoutes()->getByName('plans.index'))->not->toBeNull();
     expect(app('router')->getRoutes()->getByName('reminders.index'))->not->toBeNull();
+    expect(app('router')->getRoutes()->getByName('reminder-executions.index'))->not->toBeNull();
     expect(app('router')->getRoutes()->getByName('routines.index'))->toBeNull();
 });
 

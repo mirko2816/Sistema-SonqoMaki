@@ -13,5 +13,5 @@ Esta matriz relaciona las capacidades aprobadas con sus requisitos, casos de uso
 | Página pública | `RF-PUB-001` a `RF-PUB-008`, `RN-PUB-000`, `RN-PUB-001` | `CU-PUB-001` | `public_links`, `plans`, `routines` |
 | Configuración de recordatorios | `RF-REC-001` a `RF-REC-005`, `RN-REC-001` | `CU-REC-001` | `reminder_configurations`, `reminder_schedules` |
 | Ejecución de recordatorios | `RF-REC-006` a `RF-REC-009`, `RN-REC-002`, `RN-REC-003` | `CU-REC-002` | `reminder_executions` |
-| WhatsApp e historial | `RF-WPP-001` a `RF-WPP-006` | `CU-REC-002`, `CU-ENV-001` | `reminder_executions` |
+| WhatsApp e historial | `RF-WPP-001` a `RF-WPP-006` | `CU-REC-002`, `CU-ENV-001` (implementado) | `reminder_executions` |
 | Dashboard | `RF-UI-001`, `RF-UI-002` | `CU-UI-001` | consultas derivadas |

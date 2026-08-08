@@ -8,4 +8,14 @@ enum ReminderOutcome: string
     case Omitted = 'omitted';
     case Accepted = 'accepted';
     case Failed = 'failed';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::Processing => 'Procesando',
+            self::Omitted => 'Omitido',
+            self::Accepted => 'Aceptado por WhatsApp',
+            self::Failed => 'Fallido',
+        };
+    }
 }
