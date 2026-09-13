@@ -30,30 +30,30 @@
                                 </span>
 
                                 <div class="min-w-0 flex-1">
-                                    <h2 class="break-words text-xl font-bold tracking-tight text-slate-950">{{ $exercise->name }}</h2>
+                                    <h2 class="break-words text-xl font-bold tracking-tight text-ink-950">{{ $exercise->name }}</h2>
 
                                     @if ($exercise->description)
-                                        <p class="mt-3 whitespace-pre-line break-words text-[0.95rem] leading-7 text-slate-600">{{ $exercise->description }}</p>
+                                        <p class="mt-3 whitespace-pre-line break-words text-[0.95rem] leading-7 text-ink-600">{{ $exercise->description }}</p>
                                     @endif
 
                                     @if ($exercise->sets || $exercise->repetitions || $exercise->duration_seconds)
                                         <dl class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
                                             @if ($exercise->sets)
-                                                <div class="rounded-2xl bg-slate-50 px-4 py-3">
-                                                    <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Series</dt>
-                                                    <dd class="mt-1 text-lg font-bold text-slate-900">{{ $exercise->sets }}</dd>
+                                                <div class="rounded-2xl bg-ink-50 px-4 py-3">
+                                                    <dt class="text-xs font-semibold uppercase tracking-wide text-ink-500">Series</dt>
+                                                    <dd class="mt-1 text-lg font-bold text-ink-900">{{ $exercise->sets }}</dd>
                                                 </div>
                                             @endif
                                             @if ($exercise->repetitions)
-                                                <div class="rounded-2xl bg-slate-50 px-4 py-3">
-                                                    <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Repeticiones</dt>
-                                                    <dd class="mt-1 text-lg font-bold text-slate-900">{{ $exercise->repetitions }}</dd>
+                                                <div class="rounded-2xl bg-ink-50 px-4 py-3">
+                                                    <dt class="text-xs font-semibold uppercase tracking-wide text-ink-500">Repeticiones</dt>
+                                                    <dd class="mt-1 text-lg font-bold text-ink-900">{{ $exercise->repetitions }}</dd>
                                                 </div>
                                             @endif
                                             @if ($exercise->duration_seconds)
-                                                <div class="col-span-2 rounded-2xl bg-slate-50 px-4 py-3 sm:col-span-1">
-                                                    <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Duración</dt>
-                                                    <dd class="mt-1 text-lg font-bold text-slate-900">{{ $exercise->formatted_duration }}</dd>
+                                                <div class="col-span-2 rounded-2xl bg-ink-50 px-4 py-3 sm:col-span-1">
+                                                    <dt class="text-xs font-semibold uppercase tracking-wide text-ink-500">Duración</dt>
+                                                    <dd class="mt-1 text-lg font-bold text-ink-900">{{ $exercise->formatted_duration }}</dd>
                                                 </div>
                                             @endif
                                         </dl>
@@ -73,7 +73,7 @@
                                             </svg>
                                         </a>
                                     @else
-                                        <p class="mt-5 text-sm text-slate-500">Este ejercicio no tiene material externo.</p>
+                                        <p class="mt-5 text-sm text-ink-500">Este ejercicio no tiene material externo.</p>
                                     @endif
                                 </div>
                             </div>
@@ -116,8 +116,8 @@
                 @endif
             </span>
             <p class="mt-6 text-sm font-semibold uppercase tracking-[0.14em] text-brand-700">{{ $eyebrow }}</p>
-            <h1 id="state-title" class="mt-3 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">{{ $heading }}</h1>
-            <p class="mt-4 text-base leading-7 text-slate-600">{{ $message }}</p>
+            <h1 id="state-title" class="mt-3 text-2xl font-bold tracking-tight text-ink-950 sm:text-3xl">{{ $heading }}</h1>
+            <p class="mt-4 text-base leading-7 text-ink-600">{{ $message }}</p>
         </section>
     @endif
 </x-layouts.public>

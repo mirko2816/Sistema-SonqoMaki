@@ -1,6 +1,6 @@
 <x-layouts.authenticated title="Recordatorios">
     <x-page-header title="Recordatorios" description="Consulta y configura los horarios de cada plan de forma independiente.">
-        <x-slot:actions><a href="{{ route('reminder-executions.index') }}" class="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-100">Ver historial técnico</a></x-slot:actions>
+        <x-slot:actions><a href="{{ route('reminder-executions.index') }}" class="inline-flex min-h-11 items-center justify-center rounded-xl border border-ink-300 bg-white px-5 py-2.5 text-sm font-semibold text-ink-700 hover:bg-ink-100">Ver historial técnico</a></x-slot:actions>
     </x-page-header>
 
     <x-alert class="mt-6">
@@ -9,10 +9,10 @@
 
     <div class="mt-8">
         <x-card>
-            <div class="hidden border-b border-slate-200 bg-slate-50 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 md:grid md:grid-cols-[1.2fr_1.2fr_0.8fr_1fr_auto] md:gap-4">
+            <div class="hidden border-b border-ink-200 bg-ink-50 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-ink-500 md:grid md:grid-cols-[1.2fr_1.2fr_0.8fr_1fr_auto] md:gap-4">
                 <span>Paciente</span><span>Plan</span><span>Plan</span><span>Recordatorios</span><span>Acción</span>
             </div>
-            <div class="divide-y divide-slate-200">
+            <div class="divide-y divide-ink-200">
                 @forelse($plans as $plan)
                     @php($configuration = $plan->reminderConfiguration)
                     @php($scheduleCount = $configuration?->schedules_count ?? 0)
@@ -22,7 +22,7 @@
                         <div><span class="font-semibold md:hidden">Estado del plan: </span>{{ ['active' => 'Activo', 'paused' => 'En pausa', 'finished' => 'Finalizado'][$plan->status] }}</div>
                         <div>
                             @if($scheduleCount === 0)
-                                <span class="text-slate-600">Sin horarios</span>
+                                <span class="text-ink-600">Sin horarios</span>
                             @elseif($configuration->is_active)
                                 <span class="font-semibold text-emerald-700">Activos · {{ $scheduleCount }} horario(s)</span>
                             @else

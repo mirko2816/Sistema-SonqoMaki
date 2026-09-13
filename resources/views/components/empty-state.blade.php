@@ -6,8 +6,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 19.5V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v13.5M2 20h20M8 8h8m-8 4h8m-8 4h5" />
         </svg>
     </span>
-    <h2 class="mt-5 text-lg font-semibold text-slate-950">{{ $title }}</h2>
-    <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600">{{ $description }}</p>
+    <h2 class="mt-5 text-lg font-semibold text-ink-950">{{ $title }}</h2>
+    <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-ink-600">{{ $description }}</p>
     @if (isset($action))
         <div class="mt-6">{{ $action }}</div>
     @endif

@@ -3,46 +3,46 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#6F1A84">
+
+        <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
 
         <title>Iniciar sesión · {{ config('app.name') }}</title>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+    <body class="min-h-screen bg-ink-50 text-ink-900 antialiased">
         <main class="relative isolate flex min-h-screen items-center justify-center overflow-hidden px-5 py-10 sm:px-8">
-            <div class="absolute inset-x-0 top-0 -z-10 h-80 bg-gradient-to-br from-teal-100 via-emerald-50 to-sky-100"></div>
-            <div class="absolute -top-24 right-[-7rem] -z-10 h-72 w-72 rounded-full bg-teal-200/50 blur-3xl"></div>
+            <div class="absolute inset-x-0 top-0 -z-10 h-80 bg-gradient-to-br from-secondary/60 via-brand-50 to-brand-100"></div>
+            <div class="absolute -top-24 right-[-7rem] -z-10 h-72 w-72 rounded-full bg-accent/20 blur-3xl"></div>
 
-            <section class="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-2xl shadow-slate-900/10 lg:grid-cols-[0.9fr_1.1fr]">
-                <div class="hidden bg-slate-900 p-12 text-white lg:flex lg:flex-col lg:justify-between">
+            <section class="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-ink-200/80 bg-white shadow-2xl shadow-ink-900/10 lg:grid-cols-[0.9fr_1.1fr]">
+                <div class="hidden bg-brand-600 p-12 text-white lg:flex lg:flex-col lg:justify-between">
                     <div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-400 text-xl font-bold text-slate-950" aria-hidden="true">
-                            SM
+                        <div class="w-fit rounded-2xl bg-surface p-5">
+                            <img src="{{ asset('images/brand/logo-principal.svg') }}" alt="Sonqo Maki" width="192" height="138" class="h-auto w-48">
                         </div>
-                        <p class="mt-8 text-sm font-semibold uppercase tracking-[0.22em] text-teal-300">Sonqo Maki</p>
                         <h1 class="mt-4 text-4xl font-semibold leading-tight tracking-tight">
-                            Rehabilitación organizada, atención más cercana.
+                            Tu salud en buenas manos
                         </h1>
-                        <p class="mt-5 max-w-sm leading-7 text-slate-300">
+                        <p class="mt-5 max-w-sm leading-7 text-brand-100">
                             Acceso privado para especialistas. Tus herramientas de trabajo estarán protegidas en una sesión segura.
                         </p>
                     </div>
 
-                    <p class="mt-12 text-sm text-slate-400">Sistema de salud y rehabilitación</p>
+                    <p class="mt-12 text-sm text-secondary">Sistema de salud y rehabilitación</p>
                 </div>
 
                 <div class="p-7 sm:p-12 lg:p-14">
                     <div class="lg:hidden">
-                        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-500 font-bold text-white" aria-hidden="true">
-                            SM
-                        </div>
-                        <p class="mt-4 text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">Sonqo Maki</p>
+                        <img src="{{ asset('images/brand/logo-principal.svg') }}" alt="Sonqo Maki" width="176" height="126" class="mx-auto h-auto w-44">
+                        <p class="mt-4 text-center text-sm text-brand-700">Tu salud en buenas manos</p>
                     </div>
 
                     <div class="mt-8 lg:mt-0">
-                        <p class="text-sm font-semibold text-teal-700">Acceso para especialistas</p>
-                        <h2 class="mt-2 text-3xl font-semibold tracking-tight text-slate-950">Inicia sesión</h2>
-                        <p class="mt-3 text-sm leading-6 text-slate-600">Ingresa con la cuenta proporcionada para acceder al área privada.</p>
+                        <p class="text-sm font-semibold text-brand-700">Acceso para especialistas</p>
+                        <h2 class="mt-2 text-3xl font-semibold tracking-tight text-ink-950">Inicia sesión</h2>
+                        <p class="mt-3 text-sm leading-6 text-ink-600">Ingresa con la cuenta proporcionada para acceder al área privada.</p>
                     </div>
 
                     @if (session('status'))
@@ -61,7 +61,7 @@
                         @csrf
 
                         <div>
-                            <label for="email" class="block text-sm font-semibold text-slate-800">Correo electrónico</label>
+                            <label for="email" class="block text-sm font-semibold text-ink-800">Correo electrónico</label>
                             <input
                                 id="email"
                                 name="email"
@@ -72,9 +72,9 @@
                                 required
                                 autofocus
                                 @class([
-                                    'mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:ring-4',
+                                    'mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-ink-950 shadow-sm outline-none transition placeholder:text-ink-400 focus:ring-4',
                                     'border-red-300 focus:border-red-500 focus:ring-red-100' => $errors->has('email'),
-                                    'border-slate-300 focus:border-teal-600 focus:ring-teal-100' => ! $errors->has('email'),
+                                    'border-ink-300 focus:border-brand-600 focus:ring-brand-100' => ! $errors->has('email'),
                                 ])
                                 @error('email') aria-invalid="true" aria-describedby="email-error" @enderror
                             >
@@ -84,7 +84,7 @@
                         </div>
 
                         <div>
-                            <label for="password" class="block text-sm font-semibold text-slate-800">Contraseña</label>
+                            <label for="password" class="block text-sm font-semibold text-ink-800">Contraseña</label>
                             <input
                                 id="password"
                                 name="password"
@@ -92,9 +92,9 @@
                                 autocomplete="current-password"
                                 required
                                 @class([
-                                    'mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-slate-950 shadow-sm outline-none transition focus:ring-4',
+                                    'mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-ink-950 shadow-sm outline-none transition focus:ring-4',
                                     'border-red-300 focus:border-red-500 focus:ring-red-100' => $errors->has('password'),
-                                    'border-slate-300 focus:border-teal-600 focus:ring-teal-100' => ! $errors->has('password'),
+                                    'border-ink-300 focus:border-brand-600 focus:ring-brand-100' => ! $errors->has('password'),
                                 ])
                                 @error('password') aria-invalid="true" aria-describedby="password-error" @enderror
                             >
@@ -105,7 +105,7 @@
 
                         <button
                             type="submit"
-                            class="flex w-full items-center justify-center rounded-xl bg-teal-700 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-800 focus:outline-none focus:ring-4 focus:ring-teal-200 disabled:cursor-wait disabled:opacity-70"
+                            class="flex w-full items-center justify-center rounded-xl bg-brand-700 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-800 focus:outline-none focus:ring-4 focus:ring-brand-200 disabled:cursor-wait disabled:opacity-70"
                             x-bind:disabled="submitting"
                         >
                             <svg x-cloak x-show="submitting" class="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -116,7 +116,7 @@
                         </button>
                     </form>
 
-                    <p class="mt-8 text-center text-xs leading-5 text-slate-500">
+                    <p class="mt-8 text-center text-xs leading-5 text-ink-500">
                         El acceso está reservado a cuentas creadas por el responsable técnico.
                     </p>
                 </div>
