@@ -13,24 +13,22 @@
     </head>
     <body class="min-h-screen bg-ink-50 text-ink-900 antialiased">
         <main class="relative isolate flex min-h-screen items-center justify-center overflow-hidden px-5 py-10 sm:px-8">
-            <div class="absolute inset-x-0 top-0 -z-10 h-80 bg-gradient-to-br from-secondary/60 via-brand-50 to-brand-100"></div>
+            <div class="absolute inset-0 -z-10 bg-gradient-to-br from-secondary/60 via-brand-50 to-brand-100"></div>
             <div class="absolute -top-24 right-[-7rem] -z-10 h-72 w-72 rounded-full bg-accent/20 blur-3xl"></div>
 
-            <section class="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-ink-200/80 bg-white shadow-2xl shadow-ink-900/10 lg:grid-cols-[0.9fr_1.1fr]">
-                <div class="hidden bg-brand-600 p-12 text-white lg:flex lg:flex-col lg:justify-between">
+            <section class="isolate grid w-full max-w-5xl overflow-hidden rounded-3xl bg-white shadow-2xl shadow-ink-900/10 ring-1 ring-inset ring-ink-200/80 lg:grid-cols-[0.9fr_1.1fr]">
+                <div class="hidden bg-brand-600 p-12 text-white lg:flex lg:flex-col lg:justify-center">
                     <div>
-                        <div class="w-fit rounded-2xl bg-surface p-5">
+                        <div class="mx-auto w-fit rounded-2xl bg-surface p-5">
                             <img src="{{ asset('images/brand/logo-principal.svg') }}" alt="Sonqo Maki" width="192" height="138" class="h-auto w-48">
                         </div>
                         <h1 class="mt-4 text-4xl font-semibold leading-tight tracking-tight">
                             Tu salud en buenas manos
                         </h1>
                         <p class="mt-5 max-w-sm leading-7 text-brand-100">
-                            Acceso privado para especialistas. Tus herramientas de trabajo estarán protegidas en una sesión segura.
+                            Acceso privado para especialistas.
                         </p>
                     </div>
-
-                    <p class="mt-12 text-sm text-secondary">Sistema de salud y rehabilitación</p>
                 </div>
 
                 <div class="p-7 sm:p-12 lg:p-14">

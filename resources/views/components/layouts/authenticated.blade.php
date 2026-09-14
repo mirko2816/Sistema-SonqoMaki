@@ -21,7 +21,7 @@
         <div class="min-h-screen lg:grid lg:grid-cols-[19rem_minmax(0,1fr)]">
             <aside class="hidden border-r border-ink-200 bg-white lg:fixed lg:inset-y-0 lg:flex lg:w-76 lg:flex-col" aria-label="Barra lateral">
                 <div class="border-b border-ink-100 px-5 py-5">
-                    <x-brand />
+                    <x-brand class="justify-center" />
                 </div>
 
                 <x-navigation class="flex-1 overflow-y-auto px-4 py-5" />

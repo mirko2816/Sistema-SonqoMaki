@@ -61,7 +61,7 @@
 
             <x-table-container class="hidden md:block">
                 <table class="w-full text-left">
-                    <thead class="border-b border-ink-200 bg-ink-50 text-xs uppercase tracking-wide text-ink-500"><tr><th class="px-5 py-3">Paciente</th><th class="px-5 py-3">Teléfono</th><th class="px-5 py-3">DNI</th><th class="px-5 py-3">Estado</th><th class="px-5 py-3 text-right">Acción</th></tr></thead>
+                    <thead class="border-b border-brand-300 bg-secondary text-xs uppercase tracking-wide text-ink-900"><tr><th class="px-5 py-3">Paciente</th><th class="px-5 py-3">Teléfono</th><th class="px-5 py-3">DNI</th><th class="px-5 py-3">Estado</th><th class="px-5 py-3 text-right">Acción</th></tr></thead>
                     <tbody class="divide-y divide-ink-100">
                         @foreach ($patients as $patient)
                             <tr><td class="px-5 py-4 font-semibold text-ink-950">{{ $patient->full_name }}</td><td class="px-5 py-4 text-sm text-ink-700">{{ $patient->whatsapp_phone }}</td><td class="px-5 py-4 text-sm text-ink-700">{{ $patient->dni ?: 'No registrado' }}</td><td class="px-5 py-4"><span @class(['rounded-full px-2.5 py-1 text-xs font-semibold', 'bg-emerald-100 text-emerald-800' => $patient->status === 'active', 'bg-ink-200 text-ink-700' => $patient->status === 'inactive'])>{{ $patient->status === 'active' ? 'Activo' : 'Inactivo' }}</span></td><td class="px-5 py-4 text-right"><a href="{{ route('patients.show', $patient) }}" class="font-semibold text-brand-700 hover:text-brand-900">Ver detalle</a></td></tr>

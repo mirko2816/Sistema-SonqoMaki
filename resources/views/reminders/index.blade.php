@@ -9,7 +9,7 @@
 
     <div class="mt-8">
         <x-card>
-            <div class="hidden border-b border-ink-200 bg-ink-50 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-ink-500 md:grid md:grid-cols-[1.2fr_1.2fr_0.8fr_1fr_auto] md:gap-4">
+            <div class="hidden border-b border-brand-300 bg-secondary px-6 py-3 text-xs font-semibold uppercase tracking-wide text-ink-900 md:grid md:grid-cols-[1.2fr_1.2fr_0.8fr_1fr_auto] md:gap-4">
                 <span>Paciente</span><span>Plan</span><span>Plan</span><span>Recordatorios</span><span>Acción</span>
             </div>
             <div class="divide-y divide-ink-200">

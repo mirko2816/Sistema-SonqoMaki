@@ -52,7 +52,7 @@
 
             <x-table-container class="hidden md:block">
                 <table class="w-full table-fixed text-left">
-                    <thead class="border-b border-ink-200 bg-ink-50 text-xs uppercase tracking-wide text-ink-500"><tr><th class="w-2/5 px-5 py-3">Ejercicio</th><th class="px-5 py-3">Duración</th><th class="px-5 py-3">Sets</th><th class="px-5 py-3">Repeticiones</th><th class="px-5 py-3 text-right">Acción</th></tr></thead>
+                    <thead class="border-b border-brand-300 bg-secondary text-xs uppercase tracking-wide text-ink-900"><tr><th class="w-2/5 px-5 py-3">Ejercicio</th><th class="px-5 py-3">Duración</th><th class="px-5 py-3">Sets</th><th class="px-5 py-3">Repeticiones</th><th class="px-5 py-3 text-right">Acción</th></tr></thead>
                     <tbody class="divide-y divide-ink-100">
                         @foreach ($exercises as $exercise)
                             <tr>
